@@ -24,7 +24,7 @@ public class CE
     //For example: If quests are availiable;
     public static boolean quest1, waterBought, mimi, sasha, mary, infight, playerLost, isGuarding, misGuarding, confused, cursed, DOT, mDOT, stun, sRevived, casting, boosting,
     dodge, attackCancelled, guardCancelled, restCancelled, ballsy, defStance, shieldBash, hatchetPass, wildSlash, overflow, manaSurge, split, wrathPass, atkDown, atkUp, defUp, choosen, deathPrevention,
-    immune, attacked;    
+    attacked;    
     //
     //Check system
     //For things which happen in sequence only once up to 10 times.
@@ -34,7 +34,7 @@ public class CE
     //Timers for ablities/mechanics
     public static int guardTimer, guardAmount, mguardTimer, multiplier, defStanceTimer, trueBurst, amount, splitAmount, atksLeft, splitTimer, confuseTimer,curseTimer, DOTTimer, mDOTTimer, stunTimer,
     dodgeChance,dodgeTimer, attackCancelTimer, guardCancelTimer, restCancelTimer, castTimer, castingTime, boostingTimer,  atkDownTimer,
-    atkUpTimer, defUpTimer, immuneTimer;
+    atkUpTimer, defUpTimer;
 
     //+
     //Misc.
@@ -727,6 +727,7 @@ public class CE
             if(player.dagger()){
                 daggerCheck();
             }
+            
             guardCheck();//Checks whether the player/monster is guarding. Prevents extra guarding
             confuseCheck();//Checks if the player is confused or not.
             curseCheck();//Checks if the player is curse.
@@ -741,7 +742,7 @@ public class CE
             cancelAttackCheck();
             cancelGuardCheck();
             cancelRestCheck();
-            immuneCheck();
+            player.immuneCheck();
             goonCheck();
             lastTurnHp=player.getHealth();
             if(deathCheck()){// HAS TO BE IN THE BOTTOM OF STATUS EFFECTS
@@ -751,6 +752,7 @@ public class CE
             //--------------------------------------//
 
             //-----------MONSTER TURN---------------//
+            monster.immuneCheck();
             if(id>=102&&id<=105){
                 witchPass(); //<--for witch transformations
             }
@@ -1182,21 +1184,6 @@ public class CE
         }
     }
 
-    public void immune(int amount)
-    {
-        immune = true;
-        immuneTimer = amount;
-    }
-
-    public void immuneCheck()
-    {
-        immuneTimer--;
-        if(immuneTimer<=0)
-        {
-            immune = false;
-        }
-    }
-
     public void goonCheck() throws InterruptedException{
         if(bossTimer&&monster.getHealth()<=0&&monster.getId()==9001){
             boss.setDefense(boss.getDefense()-1);
@@ -1528,7 +1515,7 @@ public class CE
         monster.setHealth(monster.getHealth()-2*player.getDamage()+monster.getDefense());
         System.out.println("Cinthas does "+(monster.getHealth()-2*player.getDamage()+monster.getDefense())+" to the enemy "+monster.getName());
         println("{Cinthas} Proceeding to protect user from not dead bad guy.",30);
-        immune(1);
+        player.immune(2);
     }
 
     public void useCharge() throws InterruptedException
