@@ -3,7 +3,7 @@
  * Organism is a super class that deals with basic character stats and methods.
  * 
  * @author (Kenny Doan and Brian Tran) 
- * @version (2.1.0) missing health (double) has been added.
+ * @version (1.0) missing health (double) has been added.
  */
 public class Organism
 {
