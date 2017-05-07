@@ -85,7 +85,7 @@ public class CE
         }
         else{
             println("You decide to leave the strange rock alone",10,500);
-            println("After walking aimlessly walking around, you stumble upon a large town",10,500);
+            println("After walking aimlessly around, you stumble upon a large town",10,500);
             e.printTown();
         }
     }
