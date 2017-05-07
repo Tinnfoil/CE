@@ -19,7 +19,7 @@ public class CE
     //These booleans are used for status of the player in non-combat situation.
     //For example: If quests are availiable;
     public static boolean quest1, waterBought, mimi, sasha, mary, infight, playerLost, isGuarding, misGuarding, confused, cursed, DOT, mDOT, stun, sRevived, casting, boosting,
-    dodge, attackCancelled, guardCancelled, restCancelled, ballsy, defStance, hatchetPass, wildSlash, overflow, manaSurge, split, wrathPass, atkDown, atkUp, defUp, choosen, deathPrevention,
+    dodge, attackCancelled, guardCancelled, restCancelled, ballsy, defStance, shieldBash, hatchetPass, wildSlash, overflow, manaSurge, split, wrathPass, atkDown, atkUp, defUp, choosen, deathPrevention,
     immune;    
     //
     //Check system
@@ -28,7 +28,7 @@ public class CE
 
     //+
     //Timers for ablities/mechanics
-    public static int guardTimer, guardAmount, mguardTimer, defStanceTimer, shieldBash, amount, splitAmount, atksLeft, splitTimer, confuseTimer,curseTimer, DOTTimer, mDOTTimer, stunTimer,
+    public static int guardTimer, guardAmount, mguardTimer, defStanceTimer, amount, splitAmount, atksLeft, splitTimer, confuseTimer,curseTimer, DOTTimer, mDOTTimer, stunTimer,
     dodgeChance,dodgeTimer, attackCancelTimer, guardCancelTimer, restCancelTimer, castTimer, castingTime, boostingTimer,  atkDownTimer,
     atkUpTimer, defUpTimer, immuneTimer;
 
