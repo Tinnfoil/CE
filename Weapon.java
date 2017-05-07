@@ -1,7 +1,7 @@
 
 /**
  * Weapon Class represents a weapon which is a object that has it's respective stats.
- * :)
+ * :/
  * @author (Kenny Doan and Brian Tran) 
  * @version (CE 1.0)
  */
