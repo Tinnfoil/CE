@@ -1,7 +1,7 @@
 import java.util.*;
 /**
  * A class where the main animations/story is.
- * 
+ * :)
  * @author (Kenny Doan) 
  * @version (2.4)
  */
