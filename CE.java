@@ -1310,6 +1310,7 @@ public class CE
         {
             println("You stunned the "+monster.getName()+" again!",30);
             shieldBash=true;
+            attack();
             stun(2);
         }
         else if(gen.nextInt(100)+1 <= 40)
