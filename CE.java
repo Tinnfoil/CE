@@ -28,7 +28,7 @@ public class CE
 
     //+
     //Timers for ablities/mechanics
-    public static int guardTimer, guardAmount, mguardTimer, defStanceTimer, amount, splitAmount, atksLeft, splitTimer, confuseTimer,curseTimer, DOTTimer, mDOTTimer, stunTimer,
+    public static int guardTimer, guardAmount, mguardTimer, defStanceTimer, shieldBash, amount, splitAmount, atksLeft, splitTimer, confuseTimer,curseTimer, DOTTimer, mDOTTimer, stunTimer,
     dodgeChance,dodgeTimer, attackCancelTimer, guardCancelTimer, restCancelTimer, castTimer, castingTime, boostingTimer,  atkDownTimer,
     atkUpTimer, defUpTimer, immuneTimer;
 
@@ -1399,16 +1399,16 @@ public class CE
         if(stunTimer>0)
         {
             println("You stunned the "+monster.getName()+" again!",30);
-            damage=damage*2;
+            shieldBash=true;
             stun(2);
         }
         else if(gen.nextInt(100)+1 <= 50)
         {
             println("You stunned the"+monster.getName()+"!",30);
+            println("You dealt "+damage+" damage to the "+monster.getName()+"",20);
+            monster.setHealth(monster.getHealth()-damage);
             stun(2);
         }
-        println("You dealt "+damage+" damage to the "+monster.getName()+"",20);
-        monster.setHealth(monster.getHealth()-damage);
     }
 
     /**
@@ -1726,6 +1726,10 @@ public class CE
         if(wildSlash){
             atk=atk*2;
             wildSlash=false;
+        }
+        if(shieldBash){
+            atk=atk*2;
+            shieldBash=false;
         }
         if(rn<=player.getCrit()){
             if(player.cloak()&&dodge){  
