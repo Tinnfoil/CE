@@ -1,7 +1,7 @@
 import java.util.*;
 /**
  * Player object (More can be added).
- * //+ means things can be added
+ * //+ means things can be added :)
  * @author (Kenny Doan and Brian Tran) 
  * @version (CE 2.5) Balance Update
  */
