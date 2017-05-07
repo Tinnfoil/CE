@@ -1,7 +1,7 @@
 
 /**
  * Armor Class represents a armor which is a object that has it's respective stats.
- * 
+ * :)
  * @author (Kenny Doan and Brian Tran) 
  * @version (CE 2.1.0)
  */
