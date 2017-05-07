@@ -3,7 +3,7 @@ import java.util.*;
 /**
  * A short game with the simple goal of beating the final boss in under 10 days.
  * This is a open source code and things are open to be changed
- * //+ means things can be added :)
+ * //+ means things can be added
  * @author (Kenny Doan and Brian Tran) 
  * @version (CE 2.5.1) Balance Update
  */
@@ -28,7 +28,7 @@ public class CE
 
     //+
     //Timers for ablities/mechanics
-    public static int guardTimer, guardAmount, mguardTimer, defStanceTimer, amount, splitAmount, atksLeft, splitTimer, confuseTimer,curseTimer, DOTTimer, mDOTTimer, stunTimer,
+    public static int guardTimer, guardAmount, mguardTimer, multiplier, defStanceTimer, amount, splitAmount, atksLeft, splitTimer, confuseTimer,curseTimer, DOTTimer, mDOTTimer, stunTimer,
     dodgeChance,dodgeTimer, attackCancelTimer, guardCancelTimer, restCancelTimer, castTimer, castingTime, boostingTimer,  atkDownTimer,
     atkUpTimer, defUpTimer, immuneTimer;
 
@@ -39,9 +39,9 @@ public class CE
     public static int[] dung, currentDung;
 
     public static Player saveFile;
-    
+
     //Boss
-    public static boolean mDefStance, bossTimer, restart;
+    public static boolean mDefStance, bossTimer;
     public static int timer;
     public static String bossName;
     Player player= new Player(100,100,100,100,10,0,5,5,"");
@@ -63,13 +63,11 @@ public class CE
         playerLost=false;
         bossName="King";
         CE game= new CE();
-        game.player.setMaxHealth(game.player.getMaxHealth()+60);
+        game.player.setMaxHealth(game.player.getMaxHealth()+40);
         game.player.setHealth(game.player.getMaxHealth());
         game.e.printTitle();
         game.start();
-        while(playerLost==false){
-            game.fight(game.town());
-        }
+        game.town();
     }
 
     public void start() throws InterruptedException{
@@ -85,7 +83,7 @@ public class CE
         }
         else{
             println("You decide to leave the strange rock alone",10,500);
-            println("After walking aimlessly around, you stumble upon a large town",10,500);
+            println("After walking aimlessly walking around, you stumble upon a large town",10,500);
             e.printTown();
         }
     }
@@ -96,359 +94,280 @@ public class CE
      * Returns a value. Which represents a monster id.
      * 
      */
-    public int town() throws InterruptedException{
-        System.out.println(restart);
-        if(restart)
-        {
-            
-            System.out.println("Hi");
-            player = saveFile;
-            restart = false;
-        }
-        saveFile = player;
+    public void town() throws InterruptedException{
         Scanner input= new Scanner(System.in);
         String a="1";
         String b="1";
-        day++; //every call for this method will increase the day.
-        System.out.println("{Day "+day+"}");
-        System.out.println("Press 1 to continue");
-        a=input.next(); //<--doesn't matter but it's used for pauses in the game.
-        while(infight==false){
-            System.out.println("Gold:"+gold+"");
-            System.out.println("(1)Tavern");
-            System.out.print("(2)Healer");
-            if(player.healthPercentage()<.4){// helper indicators
-                System.out.println("{Low Health!"+player.getHealth()+"/"+player.getMaxHealth()+"}");
-            }
-            else{
-                System.out.println("");
-            }
-            System.out.println("(3)Blacksmith");
-            System.out.print("(4)Player");
-            if(player.getSP()>0){
-                System.out.println("{Skill Points Unused!}");
-            }
-            else{
-                System.out.println("");
-            }
-            System.out.println("(5)Dungeon");
-            a=input.next();
+        while(playerLost==false){
+            day++; //every call for this method will increase the day.
+            System.out.println("{Day "+day+"}");
+            System.out.println("Press 1 to continue");
+            a=input.next(); //<--doesn't matter but it's used for pauses in the game.
+            while(infight==false){
+                System.out.println("Gold:"+gold+"");
+                System.out.println("(1)Tavern");
+                System.out.print("(2)Healer");
+                if(player.healthPercentage()<.4){// helper indicators
+                    System.out.println("{Low Health!"+player.getHealth()+"/"+player.getMaxHealth()+"}");
+                }
+                else{
+                    System.out.println("");
+                }
+                System.out.println("(3)Blacksmith");
+                System.out.print("(4)Player");
+                if(player.getSP()>0){
+                    System.out.println("{Skill Points Unused!}");
+                }
+                else{
+                    System.out.println("");
+                }
+                System.out.println("(5)Dungeon");
+                a=input.next();
 
-            //After selecting a choice the switch method will chose one outcome.
-            //more can be added
-            //Tavern
-            if(a.equals("1")){
-                b="1"; // use b for choices in the cases.
-                e.tavernTalk();
-                System.out.println("(1)Buy a drink [5 gold]");
-                System.out.println("(2)Talk to Billy");
-                System.out.println("(0)Go back");
-                b=input.next();
-                if(b.equals("1")){
-                    println("Bartender:What kind?",20);
-                    System.out.println("(1)Beer[5 gold]");
-                    System.out.println("(2)Water[1 gold]");
-                    System.out.println("(3)Cold Water[1 Gold]");
-                    System.out.println("(0)Go back");
-                    String c=input.next();
-                    if(c.equals("1")&&canBuy(5)){
-                        System.out.println("Bartender: Here you go.");
-                        System.out.println("You drink a mug of beer.");
-                    }
-                    else if(c.equals("2")&&canBuy(1)){
-                        System.out.println("Bartender: Here you go.");
-                        System.out.println("You drink some water.");
-                    }
-                    else if(c.equals("3")){
-                        if(!waterBought){
-                            gold= gold-1;
-                            System.out.println("Bartender: Here you go.");
-                            System.out.println("You drink a cold glass of water");
-                            e.tavernSecret();
-                        }
-                        println("You follow the bartender though a secret door in the back.",30,500);
-                        if(!waterBought){
-                            println("Bartender:Pick whatever one you like...",30,500);
-                            println("He's harboring female slaves!",30,500);
-                        }
-                        System.out.println("GOLD:"+gold+"");
-                        if(!mimi){System.out.println("(1)Mimi{50% chance to find more gold after fights(x1.2)}[120 Gold]|Age: 14|");}
-                        if(!sasha){System.out.println("(2)Sasha{10% chance to attack per turn(damage based on your level:10+level)}[100 Gold]|Age:17|");}
-                        if(!mary){System.out.println("(3)Mary{Heals you 15% of max health after every fight(Not through magic...)}[120 gold]|Age:19|");}
-                        System.out.println("(0)Leave");
-                        String d=input.next();
-                        if(d.equals("1")&&!mimi&&canBuy(120)){
-                            println("Mimi:I-I hope I can be useful to you...",30,500);
-                            println("Mimi:I'm sorry, what was your name master?",30,500);
-                            System.out.print("What will the slave call you?:");
-                            String name= input.next();
-                            e.setName1(name);
-                            println("Mimi:I can't do much, b-but I can find things for you.",30,500);
-                            println("Mimi:I promise I'll get things you will like "+e.getName1()+"!",30,500);
-                            mimi=true;
-                        }
-                        else if(d.equals("2")&&!sasha&&canBuy(100)){
-                            println("Sasha:... I know swordmanship... I don't know much other than that",30,500);
-                            println("Sasha:Umm...?",30,500);
-                            System.out.print("What will the slave call you?:");
-                            String name= input.next();
-                            e.setName2(name);
-                            println("Sasha:I will do my best to serve you "+e.getName2()+"",30,500);
-                            sasha=true;
-                        }
-                        else if(d.equals("3")&&!mary&&canBuy(120)){
-                            println("She smiles and walks towards me",30,500);
-                            println("Mary:I think you and me will get along nicely...",30,500);
-                            println("Mary:May I ask for your name Master?...",30,500);
-                            System.out.print("What will the slave call you?:");
-                            String name= input.next();
-                            e.setName3(name);
-                            println("Mary:I hope I can please you "+e.getName3()+". One way or another...",30,500);
-                            mary=true;
-                        }
-                        waterBought=true;
-                    }
-                }
-                else if(b.equals("2"))
-                {
-                    println("It seems Billy is away at this time",30);
-                }
-            }
-            //Healer
-            else if(a.equals("2")){
-                boolean cont= true;
-                e.healerTalk();
-                while(cont){
-                    System.out.println("GOLD:"+gold+"  Health:"+player.getHealth()+"/"+player.getMaxHealth()+"");
-                    System.out.println("(1)Max heal[30 gold]");
-                    System.out.println("(2)100 point heal[20 gold]");
-                    System.out.println("(3)Health Potion{Heals 20+player's heal}[30 gold]|Max:5|");
-                    System.out.println("(4)Mana Flask{Regenerates 30% of player's missing mana}[25 gold]|Max:5|");
-                    System.out.println("(5)Ala's Tonic{Removes all debuffs}[15 gold]");
+                //After selecting a choice the switch method will chose one outcome.
+                //more can be added
+                //Tavern
+                if(a.equals("1")){
+                    b="1"; // use b for choices in the cases.
+                    e.tavernTalk();
+                    System.out.println("(1)Buy a drink [5 gold]");
+                    System.out.println("(2)Talk to Billy");
                     System.out.println("(0)Go back");
                     b=input.next();
-                    if(b.equals("1")&&canBuy(30)&&player.healthPercentage()!=1.0){
-                        player.setHealth(player.getMaxHealth());
-                    }
-                    else if(b.equals("2")&&canBuy(20)){
-                        player.setHealth(player.getHealth()+100);
-                    }    
-                    else if(b.equals("3")&&canBuy(30)&&healthPot<5){
-                        System.out.println("You buy a Health Potion");
-                        healthPot++;
-                    }
-                    else if(b.equals("4")&&canBuy(25)&&manaPot<5){
-                        System.out.println("You bought a Mana potion");
-                        manaPot++;
-                    }
-                    else if(b.equals("5")&&canBuy(15)){
-                        System.out.println("You bought Ala's tonic");
-                        statusPot++;
-                    }
-                    else if(b.equals("0")){
-                        cont=false;
-                    }
-                }
-                System.out.println("Priestess: Come back next time!");
-            }
-            //Blacksmith
-            else if(a.equals("3")){
-                e.smithTalk();
-                System.out.println("(1)Armors");
-                System.out.println("(2)Stackables");// Ex. defense upgrade is player defense+1;
-                System.out.println("(3)Weapons");
-                System.out.println("(0)Go back");
-                b= input.next();
-                if(b.equals("1")){
-                    boolean cont=true;
-                    while(cont){
-                        System.out.println("GOLD:"+gold+"");
-                        if(!player.getArmory().get(0).getOwned()){System.out.println("(1)Goblin Tunic[100 Gold]");}
-                        if(!player.getArmory().get(1).getOwned()){System.out.println("(2)Dark Cloak[100 Gold]");}
-                        if(!player.getArmory().get(2).getOwned()){System.out.println("(3)Gaia's Chestpiece[100 Gold]");}
-                        if(!player.getArmory().get(3).getOwned()){System.out.println("(4)Ari's Robes[100 Gold]");}
-                        if(!player.getArmory().get(4).getOwned()){System.out.println("(5)Magic Cowl[100 Gold]");}
-                        System.out.println("(0)Go Back");
-                        String c=input.next();
-                        if(!c.equals("0")){
-                            cont=printArmors(c);
-                        }
-                        else if(c.equals("0")){
-                            cont=false;
-                        }
-                    }
-                }
-                else if(b.equals("2")){
-                    boolean cont = true;
-                    while(cont){
-                        System.out.println("Gold:"+gold+"");
-                        System.out.println("(1)Living Armor{+1 Health per turn during combat}[75 Gold]");
-                        System.out.println("(2)Mana Ring{+1 Mana Regeneration per turn}[50 gold]");
-                        System.out.println("(3)Reina's Pendent{+15 starting mana}[50 Gold]|Max:4|");
-                        System.out.println("(4)Thirst of Ando{+2 damage -2 defense}[50 gold]");
-                        System.out.println("(0)Go Back");
-                        String c= input.next();
-                        if(c.equals("1")&&canBuy(75)){
-                            println("Living Armor +1!",20);
-                            livingArmor++;
-                        }
-                        if(c.equals("2")&&canBuy(50)){
-                            println("Mana Regen +1!",20);
-                            player.setManaRegen(player.getManaRegen()+1);
-                        }
-                        if(c.equals("3")&&canBuy(50)&&startingMana<60){
-                            println("Starting mana +15!",20);
-                            startingMana+=15;
-                        }
-                        if(c.equals("4")&&canBuy(50)){
-                            println("Gain +2 damage and lost -2 defense",20);
-                            player.setNormDamage(player.getNormDamage()+2);
-                            player.setNormDefense(player.getNormDefense()-2);
-                            player.updateStats();
-                        }
-                        if(c.equals("0")){
-                            cont=false;
-                        }
-                    }
-                }
-                else if(b.equals("3")){
-                    boolean cont= true;
-                    while(cont){
-                        System.out.println("Gold:"+gold+"");
-                        if(!player.getWeaponRack().get(1).getOwned()){System.out.println("(1)Hatchet[100 Gold]");}
-                        if(!player.getWeaponRack().get(2).getOwned()){System.out.println("(2)Shield{Adds on sword}[100 Gold]");}
-                        if(!player.getWeaponRack().get(3).getOwned()){System.out.println("(3)Magical Staff[100 Gold]");}
-                        if(!player.getWeaponRack().get(4).getOwned()){System.out.println("(4)Cursed dagger[100 Gold]");}
-                        if(!player.getWeaponRack().get(5).getOwned()){System.out.println("(5)Charge Saber[100 Gold]");}
+                    if(b.equals("1")){
+                        println("Bartender:What kind?",20);
+                        System.out.println("(1)Beer[5 gold]");
+                        System.out.println("(2)Water[1 gold]");
+                        System.out.println("(3)Cold Water[1 Gold]");
                         System.out.println("(0)Go back");
-                        String c= input.next();
-                        if(!c.equals("0")){
-                            cont=printWeapons(c);
+                        String c=input.next();
+                        if(c.equals("1")&&canBuy(5)){
+                            System.out.println("Bartender: Here you go.");
+                            System.out.println("You drink a mug of beer.");
                         }
-                        else if(c.equals("0")){
+                        else if(c.equals("2")&&canBuy(1)){
+                            System.out.println("Bartender: Here you go.");
+                            System.out.println("You drink some water.");
+                        }
+                        else if(c.equals("3")){
+                            if(!waterBought){
+                                gold= gold-1;
+                                System.out.println("Bartender: Here you go.");
+                                System.out.println("You drink a cold glass of water");
+                                e.tavernSecret();
+                            }
+                            println("You follow the bartender though a secret door in the back.",30,500);
+                            if(!waterBought){
+                                println("Bartender:Pick whatever one you like...",30,500);
+                                println("He's harboring female slaves!",30,500);
+                            }
+                            System.out.println("GOLD:"+gold+"");
+                            if(!mimi){System.out.println("(1)Mimi{50% chance to find more gold after fights(x1.2)}[120 Gold]|Age: 14|");}
+                            if(!sasha){System.out.println("(2)Sasha{10% chance to attack per turn(damage based on your level:10+level)}[100 Gold]|Age:17|");}
+                            if(!mary){System.out.println("(3)Mary{Heals you 15% of max health after every fight(Not through magic...)}[120 gold]|Age:19|");}
+                            System.out.println("(0)Leave");
+                            String d=input.next();
+                            if(d.equals("1")&&!mimi&&canBuy(120)){
+                                println("Mimi:I-I hope I can be useful to you...",30,500);
+                                println("Mimi:I'm sorry, what was your name master?",30,500);
+                                System.out.print("What will the slave call you?:");
+                                String name= input.next();
+                                e.setName1(name);
+                                println("Mimi:I can't do much, b-but I can find things for you.",30,500);
+                                println("Mimi:I promise I'll get things you will like "+e.getName1()+"!",30,500);
+                                mimi=true;
+                            }
+                            else if(d.equals("2")&&!sasha&&canBuy(100)){
+                                println("Sasha:... I know swordmanship... I don't know much other than that",30,500);
+                                println("Sasha:Umm...?",30,500);
+                                System.out.print("What will the slave call you?:");
+                                String name= input.next();
+                                e.setName2(name);
+                                println("Sasha:I will do my best to serve you "+e.getName2()+"",30,500);
+                                sasha=true;
+                            }
+                            else if(d.equals("3")&&!mary&&canBuy(120)){
+                                println("She smiles and walks towards me",30,500);
+                                println("Mary:I think you and me will get along nicely...",30,500);
+                                println("Mary:May I ask for your name Master?...",30,500);
+                                System.out.print("What will the slave call you?:");
+                                String name= input.next();
+                                e.setName3(name);
+                                println("Mary:I hope I can please you "+e.getName3()+". One way or another...",30,500);
+                                mary=true;
+                            }
+                            waterBought=true;
+                        }
+                    }
+                    else if(b.equals("2"))
+                    {
+                        println("It seems Billy is away at this time",30);
+                    }
+                }
+                //Healer
+                else if(a.equals("2")){
+                    boolean cont= true;
+                    e.healerTalk();
+                    while(cont){
+                        System.out.println("GOLD:"+gold+"  Health:"+player.getHealth()+"/"+player.getMaxHealth()+"");
+                        System.out.println("(1)Max heal[30 gold]");
+                        System.out.println("(2)100 point heal[20 gold]");
+                        System.out.println("(3)Health Potion{Heals 20+player's heal}[30 gold]|Max:5|");
+                        System.out.println("(4)Mana Flask{Regenerates 30% of player's missing mana}[25 gold]|Max:5|");
+                        System.out.println("(5)Ala's Tonic{Removes all debuffs}[15 gold]");
+                        System.out.println("(0)Go back");
+                        b=input.next();
+                        if(b.equals("1")&&canBuy(30)&&player.healthPercentage()!=1.0){
+                            player.setHealth(player.getMaxHealth());
+                        }
+                        else if(b.equals("2")&&canBuy(20)){
+                            player.setHealth(player.getHealth()+100);
+                        }    
+                        else if(b.equals("3")&&canBuy(30)&&healthPot<5){
+                            System.out.println("You buy a Health Potion");
+                            healthPot++;
+                        }
+                        else if(b.equals("4")&&canBuy(25)&&manaPot<5){
+                            System.out.println("You bought a Mana potion");
+                            manaPot++;
+                        }
+                        else if(b.equals("5")&&canBuy(15)){
+                            System.out.println("You bought Ala's tonic");
+                            statusPot++;
+                        }
+                        else if(b.equals("0")){
                             cont=false;
                         }
                     }
+                    System.out.println("Priestess: Come back next time!");
+                }
+                //Blacksmith
+                else if(a.equals("3")){
+                    e.smithTalk();
+                    System.out.println("(1)Armors");
+                    System.out.println("(2)Stackables");// Ex. defense upgrade is player defense+1;
+                    System.out.println("(3)Weapons");
+                    System.out.println("(0)Go back");
+                    b= input.next();
+                    if(b.equals("1")){
+                        boolean cont=true;
+                        while(cont){
+                            System.out.println("GOLD:"+gold+"");
+                            if(!player.getArmory().get(0).getOwned()){System.out.println("(1)Goblin Tunic[100 Gold]");}
+                            if(!player.getArmory().get(1).getOwned()){System.out.println("(2)Dark Cloak[100 Gold]");}
+                            if(!player.getArmory().get(2).getOwned()){System.out.println("(3)Gaia's Chestpiece[100 Gold]");}
+                            if(!player.getArmory().get(3).getOwned()){System.out.println("(4)Ari's Robes[100 Gold]");}
+                            if(!player.getArmory().get(4).getOwned()){System.out.println("(5)Magic Cowl[100 Gold]");}
+                            System.out.println("(0)Go Back");
+                            String c=input.next();
+                            if(!c.equals("0")){
+                                cont=printArmors(c);
+                            }
+                            else if(c.equals("0")){
+                                cont=false;
+                            }
+                        }
+                    }
+                    else if(b.equals("2")){
+                        boolean cont = true;
+                        while(cont){
+                            System.out.println("Gold:"+gold+"");
+                            System.out.println("(1)Living Armor{+1 Health per turn during combat}[75 Gold]");
+                            System.out.println("(2)Mana Ring{+1 Mana Regeneration per turn}[50 gold]");
+                            System.out.println("(3)Reina's Pendent{+15 starting mana}[50 Gold]|Max:4|");
+                            System.out.println("(4)Thirst of Ando{+2 damage -2 defense}[50 gold]");
+                            System.out.println("(0)Go Back");
+                            String c= input.next();
+                            if(c.equals("1")&&canBuy(75)){
+                                println("Living Armor +1!",20);
+                                livingArmor++;
+                            }
+                            if(c.equals("2")&&canBuy(50)){
+                                println("Mana Regen +1!",20);
+                                player.setManaRegen(player.getManaRegen()+1);
+                            }
+                            if(c.equals("3")&&canBuy(50)&&startingMana<60){
+                                println("Starting mana +15!",20);
+                                startingMana+=15;
+                            }
+                            if(c.equals("4")&&canBuy(50)){
+                                println("Gain +2 damage and lost -2 defense",20);
+                                player.setNormDamage(player.getNormDamage()+2);
+                                player.setNormDefense(player.getNormDefense()-2);
+                                player.updateStats();
+                            }
+                            if(c.equals("0")){
+                                cont=false;
+                            }
+                        }
+                    }
+                    else if(b.equals("3")){
+                        boolean cont= true;
+                        while(cont){
+                            System.out.println("Gold:"+gold+"");
+                            if(!player.getWeaponRack().get(1).getOwned()){System.out.println("(1)Hatchet[100 Gold]");}
+                            if(!player.getWeaponRack().get(2).getOwned()){System.out.println("(2)Shield{Adds on sword}[100 Gold]");}
+                            if(!player.getWeaponRack().get(3).getOwned()){System.out.println("(3)Magical Staff[100 Gold]");}
+                            if(!player.getWeaponRack().get(4).getOwned()){System.out.println("(4)Cursed dagger[100 Gold]");}
+                            if(!player.getWeaponRack().get(5).getOwned()){System.out.println("(5)Charge Saber[100 Gold]");}
+                            System.out.println("(0)Go back");
+                            String c= input.next();
+                            if(!c.equals("0")){
+                                cont=printWeapons(c);
+                            }
+                            else if(c.equals("0")){
+                                cont=false;
+                            }
+                        }
+                    }
+                }
+                //Player
+                else if(a.equals("4")){
+                    playerOptions();
+                }
+                else if(a.equals("5")){
+                    if(dungeon==1){System.out.println("(1)Rocky Highlands 1");}
+                    if(dungeon==2){System.out.println("(2)Ghastly Ruins 2");}
+                    if(dungeon==3){System.out.println("(3)Devil's Lair 3");}
+                    if(dungeon==4){System.out.println("(4)The Throne 4");}
+                    b= input.next();
+                    if(b.equals("1")&&dungeon==1){
+                        if(!dungeon(1,4)){
+                            playerLost=true;break; 
+                        }
+                        else{
+                            infight=false;
+                        }
+                    }
+                    else if(b.equals("2")&&dungeon==2){
+                        if(!dungeon(2,5)){
+                            playerLost=true;break;   
+                        }
+                        else{
+                            infight=false;
+                        }
+                    }
+                    else if(b.equals("3")&&dungeon==3){
+                        if(!dungeon(3,5)){
+                            playerLost=true;break;
+                        }
+                        else{
+                            infight=false;
+                        }
+                    }
+                    else if(b.equals("4")&&dungeon==4){
+                        if(!dungeon(4,6)){
+                            playerLost=true;break;    
+                        }
+                        else{
+                            infight=false;
+                        }
+                    }
                 }
             }
-            //Player
-            else if(a.equals("4")){
-                playerOptions();
-            }
-            //Fight Monster
-            //+
-            else if(a.equals("6")){
-                System.out.println("Monster Testing");
-                System.out.println("(1)Easy");// these are temp. since dungeons will be main way of fighting
-                System.out.println("(2)Medium");
-                System.out.println("(3)Hard");
-                System.out.println("(4)Bosses");
-                b=input.next();
-                if(b.equals("1")){
-                    System.out.println("(1)Slime");
-                    System.out.println("(2)Golin");
-                    System.out.println("(3)Skeleton");
-                    System.out.println("(4)Wolf");
-                    String c=input.next();
-                    if(c.equals("1")){
-                        infight=true;
-                        return 1;
-                    }
-                    else if(c.equals("2")){
-                        infight=true;
-                        return 2;
-                    }
-                    else if(c.equals("3")){
-                        infight=true;
-                        return 3;
-                    }
-                    else if(c.equals("4")){
-                        infight=true;
-                        return 4;
-                    }
-                }
-                else if(b.equals("2")){
-                    System.out.println("(1)Ghoul");
-                    System.out.println("(2)Golem");
-                    System.out.println("(3)Orc");
-                    System.out.println("(4)Giant Crab");
-                    String c=input.next();
-                    if(c.equals("1")){
-                        infight=true;
-                        return 11;
-                    }
-                    else if(c.equals("2")){
-                        infight=true;
-                        return 12;
-                    }
-                    else if(c.equals("3")){
-                        infight=true;
-                        return 13;
-                    }
-                    else if(c.equals("4"))
-                    {
-                        infight=true;
-                        return 14;
-                    }
-                }
-                else if(b.equals("3")){
-                    System.out.println("(1)Spectral Knight");
-                    System.out.println("(2)Witch");
-                    String c=input.next();
-                    if(c.equals("1")){
-                        infight=true;
-                        return 101;
-                    }
-                    else if(c.equals("2")){
-                        infight=true;
-                        return 102;
-                    }
-                }
-                else if(b.equals("4")){
-                    System.out.println("(1)Wraith(testing)");
-                    System.out.println("(2)Boss{Name to be changed}");
-                    String c=input.next();
-                    if(c.equals("1")){
-                        infight=true;
-                        return 1001;
-                    }
-                    else if(c.equals("2")){
-                        infight=true;
-                        return 9999;
-                    }
-                }
-            }
-            else if(a.equals("5")){
-                if(dungeon==1){System.out.println("(1)Rocky Highlands 1");}
-                if(dungeon==2){System.out.println("(2)Ghastly Ruins 2");}
-                if(dungeon==3){System.out.println("(3)Devil's Lair 3");}
-                if(dungeon==4){System.out.println("(4)The Throne 4");}
-                b= input.next();
-                if(b.equals("1")&&dungeon==1){
-                    if(!dungeon(1,4)){
-                        return -1;    
-                    }
-                }
-                else if(b.equals("2")&&dungeon==2){
-                    if(!dungeon(2,5)){
-                        return -1;    
-                    }
-                }
-                else if(b.equals("3")&&dungeon==3){
-                    if(!dungeon(3,5)){
-                        return -1;
-                    }
-                }
-                else if(b.equals("4")&&dungeon==4){
-                    if(!dungeon(4,6)){
-                        return -1;    
-                    }
-                }
-            }
+            System.out.println("");
+            System.out.println("");
         }
-        System.out.println("");
-        System.out.println("");
-        return -1;
     }
 
     /**
@@ -515,10 +434,6 @@ public class CE
                 }
             }
         }
-        if(restart){
-            updateDung();
-        }
-        currentDung=dung;
         int pos=0;
         boolean dungeonWon=false;
         while(!playerLost||!dungeonWon){
@@ -579,12 +494,6 @@ public class CE
             }
             infight=true;
             fight(current);
-            if(restart)
-            {
-                pos = dung.length - 1;
-                infight = false;
-                return false    ;
-            }
             if(player.getHealth()<=0){
                 return false;
             }
@@ -684,9 +593,6 @@ public class CE
                     println("You are casting...",80);
                     break;
                 }
-                if(player.robe()&&player.getMana()<5){
-                    cancelAttack(1);
-                }
 
                 printOptions();
                 System.out.print("Action:");
@@ -704,7 +610,10 @@ public class CE
 
                 if(a.equals("4")){
                     player.printStats();// Prints the player's stats
-
+                    if(player.hatchet()){
+                        System.out.println(" "+multiplier);
+                    }
+                    else{System.out.println("");}
                     printAbilities();//<--Since there is alot of abilities. Its better to be in a seperate method.
                     System.out.print("Action:");
                     String b=input.next();
@@ -752,9 +661,6 @@ public class CE
                 if(a.equals("1")){
                     if(player.staff()&&split){
                         atksLeft=splitAmount;
-                    }
-                    if(player.robe()){
-                        useMana(5);
                     }
                     if(mDefStance){
                         println(""+monster.getName()+" deflects you attack and your weapon",20);
@@ -918,19 +824,6 @@ public class CE
             print("You have died to the "+monster.getName()+"", 50);
             println("...", 150);
             println("Game Over",50);
-            println("Would you like to restart at the beginning of the day?",10);
-            System.out.println("(1) Yes");
-            System.out.println("(2) No");
-            String ans = input.next();
-            if(ans.equals("1"))
-            {
-                restart = true;
-                infight = false;
-            }
-            else 
-            {
-                playerLost=true;
-            }
         }
         //---------------------------------------------------//
 
@@ -1373,7 +1266,7 @@ public class CE
     public void defStance() throws InterruptedException{
         defStance=true;
         println("You go into a Defensive Stance..",40);
-        defStanceTimer=3;
+        defStanceTimer=2;
     }
 
     public void defStanceCheck()
@@ -1402,7 +1295,7 @@ public class CE
             shieldBash=true;
             stun(2);
         }
-        else if(gen.nextInt(100)+1 <= 30)
+        else if(gen.nextInt(100)+1 <= 40)
         {
             println("You stunned the"+monster.getName()+"!",30);
             println("You dealt "+damage+" damage to the "+monster.getName()+"",20);
@@ -1416,9 +1309,10 @@ public class CE
      */
     public void hatchetPass()
     {
+        multiplier=(int)(player.getNormDamage()+(((1.0-((double)player.getHealth()/player.getMaxHealth()))*(double)player.getNormDamage())/2));
         if(player.hatchet())
         {
-            player.setDamage((int)(player.getNormDamage()+(((1.0-((double)player.getHealth()/player.getMaxHealth()))*(double)player.getNormDamage())/2)));
+            player.setDamage(multiplier);
         }
     }
 
@@ -1544,10 +1438,11 @@ public class CE
     {
         if(player.csaber())
         {
-            if(damageDealt>=30)
+            if(damageDealt>=40)
             {
                 player.setMana(player.getMana() + (int)player.getMaxMana()/10);
-                damageDealt=0;
+                damageDealt-=40;
+                chargeCheck();
             }
             if(lastTurnHp-player.getHealth()>=20)
             {
@@ -1585,7 +1480,7 @@ public class CE
             if(player.getMana()>=5*(int)player.getMaxMana()/10&&secondCheck==false)
             {
                 System.out.println("{Cinthas} Charge at 50%, routing power to life support. (+5 heal)");
-                player.setHeal(player.getHeal()+5);
+                player.setHeal(player.getHeal()+3);
                 secondCheck=true;
             }
             if(player.getMana()>=7*(int)player.getMaxMana()/10&&thirdCheck==false)
@@ -1745,9 +1640,6 @@ public class CE
         if(player.chestpiece()){
             atk+=(player.getHeal()/2);
         }
-        if(player.robe()){
-            atk+=(player.getManaRegen()/2);
-        }
         if(manaSurge&&atksLeft==0){
             atk+=amount; amount=0;
             manaSurge=false;
@@ -1780,6 +1672,9 @@ public class CE
                 monster.setHealth(monster.getHealth()-inflicted);
                 damageDealt+=inflicted;
                 println("You have inflicted " + inflicted + " points of damage to the " +monster.getName(),7);
+                if(player.robe()){
+                    player.setMana(player.getMana()+(inflicted/10));
+                }
             }
         }
 
@@ -1870,9 +1765,6 @@ public class CE
         player.heal();
         if(!cursed){// Yes, even curse will prevent this.
             int regen= player.getManaRegen();
-            if(player.robe()){
-                regen=regen*2;
-            }
             if(!player.csaber())
             {
                 player.setMana(player.getMana()+regen);
@@ -2489,7 +2381,7 @@ public class CE
         else if(player.swordandboard())
         {
             System.out.println("(1)Defensive Stance{For the next three turns, attacks will deal bonus damage equal to the defense}[30 Mana]");
-            System.out.println("(2)Shield Bash{Deals player's damage with a 30% to stun- Already stunned enemy will be stunned again}[20 Mana]");
+            System.out.println("(2)Shield Bash{Deals player's damage with a 40% to stun- Already stunned enemy will be stunned again}[20 Mana]");
         }
         else if(player.staff())
         {
@@ -2852,12 +2744,7 @@ public class CE
                 System.out.println("(2)Guard");
             }
             if(!restCancelled){
-                if(player.robe()){
-                    System.out.println("(3)Mana Transfusion");
-                }
-                else{
-                    System.out.println("(3)Rest");
-                }
+                System.out.println("(3)Rest");
             }
             else{System.out.println("(3)----");}
             System.out.println("(4)Other");
@@ -3026,10 +2913,10 @@ public class CE
         }
         else if(c.equals("2")){//where to buy weapon
             System.out.println("Sword and Shield:");
-            System.out.println("Passive: While guarding, player will have 5% to stun and a 5% chance to reflect when attacked");
-            System.out.println("Defensive Stance: For the 3 turns, player will deal bonus damage equal to their defense[30 Mana]");
+            System.out.println("Passive: While guarding, player's attacks will have 5% to stun and a 5% chance to reflect when attacked");
+            System.out.println("Defensive Stance: For the 2 turns, player will deal bonus damage equal to double their defense[30 Mana]");
             System.out.println("                  *Does not end the player's turn");
-            System.out.println("Shield Bash: Deals player damage and has 30% chance to stun.[20 Mana]");
+            System.out.println("Shield Bash: Deals player damage and has 40% chance to stun.[20 Mana]");
             System.out.println("             Stuns again if already stunned and deal double player damage");
             player.printWeaponStats("swordandboard");
             if(!player.getWeaponRack().get(2).getOwned()){
@@ -3090,11 +2977,12 @@ public class CE
         }
         else if(c.equals("5"))
         {
-            System.out.println("Charge Saber");
-            System.out.println("Passive: Negates all mana restoration; replaced with charges gained after certain actions.");
-            System.out.println("         Said actions include: dealing 40 dmg, guarding, taking 20 damage at once.");
-            System.out.println("         Saving charges up to a certain amount will grant addition buffs. (3-atk up, 5-heal up, 7-def up, 9-death prevention)");
-            System.out.println("         Exceeding 9 charges will automatically trigger OverHeat and reset charges and buffs.");
+            System.out.println("Charge Saber:");
+            System.out.println("Passive: Negates all mana restoration and starting mana; replaced with charges gained after certain actions.Max 10");
+            System.out.println("         To gain Charge: dealing 40 dmg in total, guarding(from not guarding), taking 20 damage in one turn.");
+            System.out.println("         Reaching 10 charges will automatically trigger OverHeat(automatically deal x4 damage to enemy)");
+            System.out.println("         Certain levels of charge give bonuses *Reaching the level will trigger bonus and going down will not remove buffs, unless player OverHeats ");
+            System.out.println("         3 Charge-4 damage, 5 Charge-3 heal, 7 Charge-3 defense, 9 Charge-death prevention)");
             System.out.println("Deploy Cinthas: Consumes 6 charges to deal double damage to the enemy.");
             System.out.println("                Also grants immunity for a turn.");
             System.out.println("Use Charge: Deploy a charge to active different abilities");
@@ -3173,8 +3061,8 @@ public class CE
         }
         if(c.equals("4")){
             System.out.println("Ari's Robes:");
-            System.out.println("Attacks will deal bonus damage equal to half the player's mana regen and cost the player 5 mana. ");
-            System.out.println("If player cannot afford it, they will be unable to use it.");
+            System.out.println("Mana Sap-%10 of damage dealt to enemy will be converted to mana for player ");
+            System.out.println("         Triggers only from attack");
             player.printArmorStats("robe");
             if(!player.getArmory().get(3).getOwned()){
                 System.out.println("(1)Buy");
@@ -3272,7 +3160,7 @@ public class CE
             String a= input.next();
             if(a.equals("1")){
                 int damage= player.damage();
-                if(defStance){damage=damage+player.getDefense();}
+                if(defStance){damage=damage+(2*player.getDefense());}
                 println("You hit the "+monster.getName()+" dealing "+damage+" damage!",7);
                 monster.setHealth(monster.getHealth()-damage);
                 chosen=true;
@@ -3430,50 +3318,5 @@ public class CE
         tenthCheck=false;
     }
 
-    /**
-     * Saves all int variables into an arraylist to pass into other classes such as save files.
-     * Index - variable
-     * 0-day
-     * 1-gold
-     * 2-dungeon
-     * 3-livingarmor
-     * 4-startingmana
-     * 5-healthpots
-     * 6-manapots
-     * 7-statuspot
-     * 8-firepot
-     */
-    public ArrayList<Integer> encode()
-    {
-        ArrayList<Integer> temp = new ArrayList<Integer>();
-        temp.add(day);
-        temp.add(gold);
-        temp.add(dungeon);
-        temp.add(livingArmor);
-        temp.add(startingMana);
-        temp.add(healthPot);
-        temp.add(manaPot);
-        temp.add(statusPot);
-        temp.add(firePot);
-        return temp;
-    }
-
-    public void updateDung(){
-        dung=currentDung;
-    }
-
-    public void recode(ArrayList<Integer> temp)
-    {
-        day = temp.get(0);
-        gold = temp.get(1);
-        dungeon = temp.get(2);
-        livingArmor = temp.get(3);
-        startingMana = temp.get(4);     
-        healthPot = temp.get(5);
-        manaPot = temp.get(6);
-        statusPot = temp.get(7);
-        firePot = temp.get(8);
-    }
-
 }
-            
+
