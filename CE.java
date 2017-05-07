@@ -1,11 +1,15 @@
-
 import java.util.*;
 /**
  * A short game with the simple goal of beating the final boss in under 10 days.
  * This is a open source code and things are open to be changed
  * //+ means things can be added
  * @author (Kenny Doan and Brian Tran) 
- * @version (CE 2.5.1) Balance Update
+ * @version (CE 2.5.1) Update
+ * Magic cowl Rework(TrueBurst)
+ * Ari's Robe Rework(Mana Sap)
+ * Monster defense buff
+ * Skeleton Revive fixed
+ * Damage Meta is real
  */
 public class CE
 {
@@ -20,7 +24,7 @@ public class CE
     //For example: If quests are availiable;
     public static boolean quest1, waterBought, mimi, sasha, mary, infight, playerLost, isGuarding, misGuarding, confused, cursed, DOT, mDOT, stun, sRevived, casting, boosting,
     dodge, attackCancelled, guardCancelled, restCancelled, ballsy, defStance, shieldBash, hatchetPass, wildSlash, overflow, manaSurge, split, wrathPass, atkDown, atkUp, defUp, choosen, deathPrevention,
-    immune;    
+    immune, attacked;    
     //
     //Check system
     //For things which happen in sequence only once up to 10 times.
@@ -28,7 +32,7 @@ public class CE
 
     //+
     //Timers for ablities/mechanics
-    public static int guardTimer, guardAmount, mguardTimer, multiplier, defStanceTimer, amount, splitAmount, atksLeft, splitTimer, confuseTimer,curseTimer, DOTTimer, mDOTTimer, stunTimer,
+    public static int guardTimer, guardAmount, mguardTimer, multiplier, defStanceTimer, trueBurst, amount, splitAmount, atksLeft, splitTimer, confuseTimer,curseTimer, DOTTimer, mDOTTimer, stunTimer,
     dodgeChance,dodgeTimer, attackCancelTimer, guardCancelTimer, restCancelTimer, castTimer, castingTime, boostingTimer,  atkDownTimer,
     atkUpTimer, defUpTimer, immuneTimer;
 
@@ -611,9 +615,13 @@ public class CE
                 if(a.equals("4")){
                     player.printStats();// Prints the player's stats
                     if(player.hatchet()){
-                        System.out.println(" "+multiplier);
+                        System.out.print(" "+multiplier+" ");
                     }
-                    else{System.out.println("");}
+                    if(player.cowl()){
+                        System.out.print("Enemy's Defense:"+monster.getHealth()+" ");
+                    }
+                    System.out.println("");
+
                     printAbilities();//<--Since there is alot of abilities. Its better to be in a seperate method.
                     System.out.print("Action:");
                     String b=input.next();
@@ -687,6 +695,9 @@ public class CE
                 else if(a.equals("3")){
                     rest();
                     if(player.dagger()){wrathStacks++;}
+                    if(player.cowl()){
+                        if(trueBurst<10){trueBurst++;}
+                    }
                 }
             }
             else{
@@ -697,6 +708,10 @@ public class CE
             //------------STATUS EFFECTS------------//
             //Any player status timer must be one more than their intended duration due to the timer being
             //reduced by one before the monster phase occurs.
+            if(attacked&&player.cowl()){
+                trueBurst=0;
+                attacked=false;
+            }
             sashaPass();
             livingArmorHeal();//Living armor heal. An armor upgrade.
             monster.buff();
@@ -1014,7 +1029,9 @@ public class CE
     public void skeletonCheck() throws InterruptedException{
         if(monster.getId()==5&&monster.getHealth()<=0&&!sRevived){
             sRevived=true;
-            monster.setHealth((int)(monster.getMaxHealth()*.5));
+            monster.setHealth((int)((double)monster.getMaxHealth()*.5));
+            System.out.println("The "+monster.getName()+" rebuilds itself!");
+            e.printAngrySkeleton();
         }
     }
 
@@ -1617,7 +1634,15 @@ public class CE
         Random gen = new Random();
         Random RN= new Random();
         int atk = player.damage();
+        int def = monster.getDefense();
         int rn =RN.nextInt(100);
+        if(player.cowl()){
+            if(trueBurst>def){
+                atk=(int)((double)atk*1.5);
+            }
+            def-=trueBurst;
+            attacked=true;
+        }
         if(wildSlash){
             atk=atk*2;
             wildSlash=false;
@@ -1654,8 +1679,9 @@ public class CE
             wrathPass=false;
             atk=atk/2;
         }
-        int def = monster.getDefense();
+
         int inflicted = atk - def;
+
         if(inflicted <= 0)
         {
             inflicted = 0;
@@ -1671,9 +1697,14 @@ public class CE
             {
                 monster.setHealth(monster.getHealth()-inflicted);
                 damageDealt+=inflicted;
-                println("You have inflicted " + inflicted + " points of damage to the " +monster.getName(),7);
+                print("You have inflicted " + inflicted + " points of damage to the " +monster.getName(),7);
                 if(player.robe()){
-                    player.setMana(player.getMana()+(inflicted/10));
+                    int amount=inflicted/5;
+                    player.setMana(player.getMana()+(amount));
+                    println(" "+amount+" Mana",5);
+                }
+                else{
+                    System.out.println();
                 }
             }
         }
@@ -1705,14 +1736,6 @@ public class CE
             }
         }
         int inflicted = atk-def;
-
-        if(player.cowl()){//mana shield
-            int amount=atk/3;
-            if(player.getMana()>amount){
-                player.setMana(player.getMana()-amount);
-                atk=(atk*2)/3;
-            }
-        }
 
         if(inflicted<=0)
         {
@@ -1776,27 +1799,27 @@ public class CE
 
     public void initializeMonster(int id) throws InterruptedException{
         if(id==1){
-            monster= new Monster(130,130,6,0,0,0,"Slime",1);
+            monster= new Monster(140,140,6,1,0,0,"Slime",1);
             System.out.println("You find a "+monster.getName()+"");
             e.printSlime();//Animation
         }
         else if(id==2){
-            monster= new Monster(150,150,4,1,0,7,"Goblin",2);
+            monster= new Monster(150,150,4,2,0,7,"Goblin",2);
             System.out.println("You encounter a "+monster.getName()+"");
             e.printGoblin();
         }
         else if(id==3){
-            monster= new Monster(120,120,6,2,0,0,"Skeleton",3);
+            monster= new Monster(120,120,5,3,0,0,"Skeleton",3);
             System.out.println("You find a "+monster.getName()+"");
             e.printSkeleton();
         }
         else if(id==4){
-            monster=new Monster(130,130,4,2,0,10,"Wolf",4);
+            monster=new Monster(130,130,4,2,2,10,"Wolf",4);
             System.out.println("You encounter a "+monster.getName()+"");
             e.printWolf();
         }
         else if(id==11){
-            monster= new Monster(200,200,4,0,20,1,"Ghoul",11);
+            monster= new Monster(200,200,4,2,20,1,"Ghoul",11);
             System.out.println("You find a lone "+monster.getName()+"");
             e.printGhoul();
         }
@@ -1819,7 +1842,7 @@ public class CE
             e.printCrab();
         }
         else if(id==101){
-            monster= new Monster(200,200,10,5,5,1,"Knight",101);
+            monster= new Monster(200,200,10,5,5,5,"Knight",101);
             System.out.println("You find a lone "+monster.getName()+"");
             e.printKnight();
         }
@@ -1852,7 +1875,7 @@ public class CE
             System.out.println("You stumble across a stray "+monster.getName()+" in the ravaged plane.");
         }
         else if(id==9999){
-            boss= new Monster(500,500,15,3,10,5,"King",9999);
+            boss= new Monster(500,500,15,5,10,5,"King",9999);
             monster=boss;
             println("King Joe says something cool!",50);
         }
@@ -2596,6 +2619,9 @@ public class CE
         if(wrathStacks>0&&player.dagger()){
             System.out.print("Wrath:"+wrathStacks+" ");
         }
+        if(player.cowl()){
+            System.out.print("TrueBurst:"+trueBurst+" ");
+        }
         if(isGuarding){
             System.out.print("Guard:"+guardTimer+" ");
         }
@@ -3061,7 +3087,7 @@ public class CE
         }
         if(c.equals("4")){
             System.out.println("Ari's Robes:");
-            System.out.println("Mana Sap-%10 of damage dealt to enemy will be converted to mana for player ");
+            System.out.println("Mana Sap-%20 of damage dealt to enemy will be converted to mana for player ");
             System.out.println("         Triggers only from attack");
             player.printArmorStats("robe");
             if(!player.getArmory().get(3).getOwned()){
@@ -3078,8 +3104,10 @@ public class CE
         }
         if(c.equals("5")){
             System.out.println("Magic Cowl:");
-            System.out.println("Damage taken from monster attacks will be reduced by 33%");
-            System.out.println("Player will lose mana equal to the amount of damage reduced");
+            System.out.println("Using rest gives stacks of TrueBurst(Max: 10)");
+            System.out.println("TrueBurst-Player's next attack will reduce enemy's defense by the amount of stacks for that turn only.");
+            System.out.println("          Multiple attacks in one turn will still have defense reduced");
+            System.out.println("          If monster's defense is equal or under 0, attacks deal x1.5 damage ");
             player.printArmorStats("cowl");
             if(!player.getArmory().get(4).getOwned()){
                 System.out.println("(1)Buy");
