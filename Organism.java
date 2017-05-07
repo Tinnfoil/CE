@@ -1,14 +1,16 @@
 
 /**
  * Organism is a super class that deals with basic character stats and methods.
- * :)
+ * 
  * @author (Kenny Doan and Brian Tran) 
- * @version (1.0) missing health (double) has been added.
+ * @version (2.1.0) missing health (double) has been added.
  */
 public class Organism
 {
     private String name;
     private int health, maxhealth, damage, normdamage, defense, normdefense, heal, normheal;
+    private boolean immune;
+    private int immuneTimer;
     public Organism(int h, int mh, int d, int dd, int hl, String name){
         health= h;
         maxhealth= mh;
@@ -28,12 +30,19 @@ public class Organism
     }
 
     public void setHealth(int amount){
-        health=amount;
-        if(health>maxhealth){
-            health= maxhealth;
+        if(amount<health&&immune)
+        {
+            
         }
-        if(health<0){
-            health=0;
+        else
+        {
+            health=amount;
+            if(health>maxhealth){
+                health= maxhealth;
+            }
+            if(health<0){
+                health=0;
+            }
         }
     }
 
@@ -135,6 +144,33 @@ public class Organism
     public int missingHealth(){
         return maxhealth-health;
     }
+    
+    public void immune(int amount)
+    {
+        immune = true;
+        immuneTimer = amount;
+    }
+    
+    public void immuneCheck()
+    {
+        immuneTimer--;
+        if(immuneTimer<=0)
+        {
+            immune = false;
+        }
+    }
+    
+    public boolean getImmune()
+    {
+        return immune;
+    }
+    
+    public void setImmune(boolean temp)
+    {
+        immune = temp;
+    }
 }
+
+
 
 
