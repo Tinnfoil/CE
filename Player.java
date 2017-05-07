@@ -1,9 +1,9 @@
 import java.util.*;
 /**
  * Player object (More can be added).
- * //+ means things can be added :)
+ * //+ means things can be added
  * @author (Kenny Doan and Brian Tran) 
- * @version (CE 2.5) Balance Update
+ * @version (CE 2.5) Update
  */
 public class Player extends Organism
 {
@@ -47,7 +47,7 @@ public class Player extends Organism
         armory.add(new Armor("cloak",15,15,1,0,5,false));
         armory.add(new Armor("chestpiece",40,0,0,0,0,false));
         armory.add(new Armor("robe",10,30,1,4,0,false));
-        armory.add(new Armor("cowl",-50,30,0,0,0,false));
+        armory.add(new Armor("cowl",10,10,2,-2,-5,false));
     }
 
     /**
