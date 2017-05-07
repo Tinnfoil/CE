@@ -1,7 +1,7 @@
 
 /**
  * The monster class that contains stats and buffs of certain types of monsters.
- * 
+ * :)
  * @author (Kenny Doan and Brian Tran) 
  * @version (CE 2.5) Balance Update
  */
