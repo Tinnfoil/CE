@@ -1515,7 +1515,7 @@ public class CE
         monster.setHealth(monster.getHealth()-2*player.getDamage()+monster.getDefense());
         System.out.println("Cinthas does "+(monster.getHealth()-2*player.getDamage()+monster.getDefense())+" to the enemy "+monster.getName());
         println("{Cinthas} Proceeding to protect user from not dead bad guy.",30);
-        player.immune(1);
+        player.immune(2);
     }
 
     public void useCharge() throws InterruptedException
