@@ -1402,7 +1402,7 @@ public class CE
             shieldBash=true;
             stun(2);
         }
-        else if(gen.nextInt(100)+1 <= 50)
+        else if(gen.nextInt(100)+1 <= 30)
         {
             println("You stunned the"+monster.getName()+"!",30);
             println("You dealt "+damage+" damage to the "+monster.getName()+"",20);
@@ -3029,7 +3029,7 @@ public class CE
             System.out.println("Passive: While guarding, player will have 5% to stun and a 5% chance to reflect when attacked");
             System.out.println("Defensive Stance: For the 3 turns, player will deal bonus damage equal to their defense[30 Mana]");
             System.out.println("                  *Does not end the player's turn");
-            System.out.println("Shield Bash: Deals player damage and has 50% chance to stun.[20 Mana]");
+            System.out.println("Shield Bash: Deals player damage and has 30% chance to stun.[20 Mana]");
             System.out.println("             Stuns again if already stunned and deal double player damage");
             player.printWeaponStats("swordandboard");
             if(!player.getWeaponRack().get(2).getOwned()){
