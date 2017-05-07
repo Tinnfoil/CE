@@ -3,7 +3,7 @@ import java.util.*;
 /**
  * A short game with the simple goal of beating the final boss in under 10 days.
  * This is a open source code and things are open to be changed
- * //+ means things can be added
+ * //+ means things can be added :)
  * @author (Kenny Doan and Brian Tran) 
  * @version (CE 2.5.1) Balance Update
  */
