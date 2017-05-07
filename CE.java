@@ -466,7 +466,7 @@ public class CE
                     if(a.equals("1")){
                         System.out.println("Rignus: Need a thing or two? I think I got what you want.");
                         System.out.println("(1)Health Potion{Heals 20+player's heal}[30 gold]|Max:5|");
-                        System.out.println("(2)Mana Flask{Regenerates 20% of player's missing mana}[25 gold]|Max:5|");
+                        System.out.println("(2)Mana Flask{Regenerates 30% of player's missing mana}[25 gold]|Max:5|");
                         System.out.println("(3)Fireblast Potion{Deals 10% of enemy's current health over three turns}[30 Gold]");
                         String b= input.next();
                         if(b.equals("1")&&canBuy(30)&&healthPot<5){
@@ -1799,12 +1799,12 @@ public class CE
 
     public void initializeMonster(int id) throws InterruptedException{
         if(id==1){
-            monster= new Monster(140,140,6,1,0,0,"Slime",1);
+            monster= new Monster(140,140,6,2,0,0,"Slime",1);
             System.out.println("You find a "+monster.getName()+"");
             e.printSlime();//Animation
         }
         else if(id==2){
-            monster= new Monster(150,150,4,2,0,7,"Goblin",2);
+            monster= new Monster(150,150,4,3,0,7,"Goblin",2);
             System.out.println("You encounter a "+monster.getName()+"");
             e.printGoblin();
         }
@@ -1814,7 +1814,7 @@ public class CE
             e.printSkeleton();
         }
         else if(id==4){
-            monster=new Monster(130,130,4,2,2,10,"Wolf",4);
+            monster=new Monster(130,130,4,3,2,10,"Wolf",4);
             System.out.println("You encounter a "+monster.getName()+"");
             e.printWolf();
         }
@@ -1831,7 +1831,7 @@ public class CE
         }
         else if(id==13)
         {
-            monster = new Monster(200,200,8,3,0,1,"Orc",13);
+            monster = new Monster(200,200,8,4,0,1,"Orc",13);
             System.out.println("You find a single "+monster.getName()+".");
             e.printOrc();
         }
@@ -1842,7 +1842,7 @@ public class CE
             e.printCrab();
         }
         else if(id==101){
-            monster= new Monster(200,200,10,5,5,5,"Knight",101);
+            monster= new Monster(300,300,10,5,5,5,"Knight",101);
             System.out.println("You find a lone "+monster.getName()+"");
             e.printKnight();
         }
@@ -1852,19 +1852,19 @@ public class CE
             int temp = gen.nextInt(4)+1;
             if(temp ==1) 
             {
-                monster = new Monster(200,200,10,3,0,7,"Summer Witch",102);
+                monster = new Monster(300,300,10,4,0,7,"Summer Witch",102);
             }
             else if(temp==2) 
             {
-                monster = new Monster(200,200,5,7,0,5,"Autumn Witch",103);
+                monster = new Monster(300,300,5,7,0,5,"Autumn Witch",103);
             }
             else if(temp==3)
             {
-                monster = new Monster(200,200,5,3,0,10,"Winter Witch",104);
+                monster = new Monster(300,300,5,4,0,10,"Winter Witch",104);
             }
             else
             {
-                monster = new Monster(200,200,5,3,20,5,"Spring Witch",105);
+                monster = new Monster(300,300,5,4,20,5,"Spring Witch",105);
             }
             println("You stumble upon a wandering "+monster.getName()+" in the woods.",20);
             e.printWitch();
@@ -2368,19 +2368,19 @@ public class CE
             int temp = gen.nextInt(4)+1;
             if(temp==1)
             {
-                monster = new Monster(monster.getHealth(),200,10,3,0,7,"Summer Witch",102);
+                monster = new Monster(monster.getHealth(),300,10,4,0,7,"Summer Witch",102);
             }
             else if(temp==2)
             {
-                monster = new Monster(monster.getHealth(),200,5,7,0,5,"Autumn Witch",103);
+                monster = new Monster(monster.getHealth(),300,5,7,0,5,"Autumn Witch",103);
             }
             else if(temp==3)
             {
-                monster = new Monster(monster.getHealth(),200,5,3,0,10,"Winter Witch",104);
+                monster = new Monster(monster.getHealth(),300,5,4,0,10,"Winter Witch",104);
             }
             else if(temp==4)
             {
-                monster = new Monster(monster.getHealth(),200,5,3,20,5,"Spring Witch",105);
+                monster = new Monster(monster.getHealth(),300,5,4,20,5,"Spring Witch",105);
             }
             println("The Witch transformed to the "+monster.getName()+"!",20);
         }
