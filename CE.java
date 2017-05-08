@@ -2361,7 +2361,7 @@ public class CE
         }
         else if(player.dagger())
         {
-            System.out.println("(1)Forbidden Pact{Heal for 25+player's heal and curse yourself for 3 turns}[10 Mana]");
+            System.out.println("(1)Forbidden Pact{Heal for 25+player's heal and curse yourself for 3 turns}[20 Mana]");
             System.out.println("(2)Wrath{For every wrath stack, attack(1/2 Damage) for the same amount of times curse yourself}[30 Mana]");
         }
         else if(player.csaber())
