@@ -76,15 +76,7 @@ public class Player extends Organism
     {
         if(mana < maxmana)
         {
-            if(weaponrack.get(3).getEquipped()&&((double)mana/maxmana)<.5){
-                mana+=(manarate/2);
-            }
-            else if(weaponrack.get(3).getEquipped()&&((double)mana/maxmana)>=.5){
-                mana+=(manarate*2);
-            }
-            else{
-                mana += manarate;
-            }
+             mana += manarate;
         }
         if(mana > maxmana)
         {
