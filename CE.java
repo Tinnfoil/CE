@@ -1316,7 +1316,6 @@ public class CE
     }
 
     public void overFlowCheck(){
-        player.setMana(player.getMana()-2);
         if(player.getMana()>=player.getMaxMana()){
             overflow=true;
         }
