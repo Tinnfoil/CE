@@ -1564,11 +1564,13 @@ public class CE
         attackCancelled=false; attackCancelTimer=0;
         guardCancelled=false; guardCancelTimer=0;
         restCancelled=false; restCancelTimer=0;
+        player.setBurned(false);player.burn(0);
     }
 
     public void mremoveEffects(){
         stun=false; stunTimer=0;
         mDOT=false; mDOTTimer=0;
+        monster.setBurned(false);monster.burn(0);
     }
     //-------------------------------------------------------------------------//
 
