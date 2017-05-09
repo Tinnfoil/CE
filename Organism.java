@@ -9,8 +9,8 @@ public class Organism
 {
     private String name;
     private int health, maxhealth, damage, normdamage, defense, normdefense, heal, normheal;
-    private boolean immune;
-    private int immuneTimer;
+    private boolean immune, burned;
+    private int immuneTimer, burnTimer;
     public Organism(int h, int mh, int d, int dd, int hl, String name){
         health= h;
         maxhealth= mh;
@@ -20,7 +20,9 @@ public class Organism
         normdefense=dd;
         heal= hl;
         normheal = hl;
-        this.name=name; 
+        this.name=name;
+        immune=false;immuneTimer=0;
+        burned=false;burnTimer=0;
     }
 
     //---------------GENERAL METHODS-----------------------------//
@@ -30,9 +32,12 @@ public class Organism
     }
 
     public void setHealth(int amount){
-        if(amount<health&&immune)
+        if((amount<health)&&immune)
         {
-            
+            //Do nothing
+        }
+        else if((amount>health)&&burned){
+            //do Nothing
         }
         else
         {
@@ -144,33 +149,68 @@ public class Organism
     public int missingHealth(){
         return maxhealth-health;
     }
-    
+
     public void immune(int amount)
     {
         immune = true;
         immuneTimer = amount;
     }
-    
+
     public void immuneCheck()
     {
-        immuneTimer--;
         if(immuneTimer<=0)
         {
             immune = false;
         }
+        else{
+            immuneTimer--;
+        }
     }
-    
+
     public boolean getImmune()
     {
         return immune;
     }
     
+    public int getImmuneTimer(){
+        return immuneTimer;
+    }
+
     public void setImmune(boolean temp)
     {
         immune = temp;
     }
+
+    public void burn(int amount)
+    {
+        burned = true;
+        burnTimer = amount;
+    }
+
+    public void burnCheck()
+    {
+        if(burnTimer<=0)
+        {
+            burned = false;
+        }
+        else{
+            burnTimer--;
+        }
+    }
+
+    public boolean getBurned()
+    {
+        return burned;
+    }
+    
+    public int getBurnTimer(){
+        return burnTimer;
+    }
+
+    public void setBurned(boolean temp)
+    {
+        burned = temp;
+    }
 }
-
-
 
 
