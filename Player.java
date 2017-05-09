@@ -46,7 +46,7 @@ public class Player extends Organism
         armory.add(new Armor("tunic",20,10,2,4,0,false));//Armor is not on by default
         armory.add(new Armor("cloak",15,15,1,0,5,false));
         armory.add(new Armor("chestpiece",40,0,0,0,0,false));
-        armory.add(new Armor("robe",10,30,1,4,0,false));
+        armory.add(new Armor("robe",10,30,1,2,0,false));
         armory.add(new Armor("cowl",10,10,2,-2,-5,false));
     }
 
