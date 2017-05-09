@@ -5,19 +5,15 @@ import java.util.*;
  * //+ means things can be added
  * @author (Kenny Doan and Brian Tran) 
  * @version (CE 2.5.1) Update
- * Magic cowl Rework(TrueBurst)
- * Ari's Robe Rework(Mana Sap)
- * Monster defense buff
- * Skeleton Revive fixed
- * Damage Meta is real
+ * Burned Mechanic added for both monster/player(Cannot recover health);
  */
 public class CE
 {
     //+
     //These ints are gobal variables that can be used or changed at anytime.
     //For example: Number of Days passed, gold(player money),  
-    public static int day, gold, dungeon, livingArmor, startingMana, healthPot, manaPot, statusPot, firePot;
-    public static String healthNum, manaNum, statusNum, fireNum;
+    public static int day, gold, dungeon, livingArmor, startingMana, healthPot, manaPot, statusPot, firePot, goodPot;
+    public static String healthNum, manaNum, statusNum, fireNum, goodNum;
 
     //+
     //These booleans are used for status of the player in non-combat situation.
@@ -67,7 +63,7 @@ public class CE
         playerLost=false;
         bossName="King";
         CE game= new CE();
-        game.player.setMaxHealth(game.player.getMaxHealth()+40);
+        game.player.setMaxHealth(game.player.getMaxHealth()+50);
         game.player.setHealth(game.player.getMaxHealth());
         game.e.printTitle();
         game.start();
@@ -468,6 +464,7 @@ public class CE
                         System.out.println("(1)Health Potion{Heals 20+player's heal}[30 gold]|Max:5|");
                         System.out.println("(2)Mana Flask{Regenerates 30% of player's missing mana}[25 gold]|Max:5|");
                         System.out.println("(3)Fireblast Potion{Deals 10% of enemy's current health over three turns}[30 Gold]");
+                        System.out.println("(4)Rignus's Good stuff{Grants immunity of damage for one turn}[30 Gold]");
                         String b= input.next();
                         if(b.equals("1")&&canBuy(30)&&healthPot<5){
                             println("You bought a Health Potion",20);
@@ -480,6 +477,10 @@ public class CE
                         else if(b.equals("3")&&canBuy(30)){
                             println("You bought a FireBlast Potion",20);
                             firePot++;
+                        }
+                        else if(b.equals("4")&&canBuy(30)){
+                            println("You bought a RGS Potion",20);
+                            goodPot++;
                         }
                     }
                     else if(a.equals("2")){
@@ -699,6 +700,7 @@ public class CE
                 trueBurst=0;
                 attacked=false;
             }
+            player.burnCheck();
             sashaPass();
             livingArmorHeal();//Living armor heal. An armor upgrade.
             monster.buff();
@@ -2041,8 +2043,9 @@ public class CE
             return true;
         }
         if(id==101&&monster.getAID()==4&&!confused&&RN.nextInt(100)<90){//Knight
-            println(monster.getName()+" burns you!",30);
+            println(monster.getName()+" burns you {Unable to heal}!",30);
             cancelRest(2);
+            player.burn(2);
             DOT(3,monster.getDamage());
             monster.setAID(RN.nextInt(2));
             return true;
@@ -2053,8 +2056,9 @@ public class CE
         {
             println(monster.getName()+ " displays her searing flames.",25);
             int damage = (int)(monster.getDamage()*1.5-(double)player.getDefense());
-            println("The searing flames inflicts " + damage+ ".",25);
+            println("The searing flames inflicts " + damage+ "{Unable to heal}",25);
             player.setHealth(player.getHealth()-damage);
+            player.burn(2);
             if(RN.nextInt(10)>4)
             {
                 println("You escape the flames, but your pants are still on fire!!!{Burning}",25);
@@ -2073,7 +2077,8 @@ public class CE
             e.printAngryWitch();
             println(monster.getName()+" forms a blue fireball and fires it",25);
             int damage = (int)(monster.getDamage()*1.5-(double)player.getDefense());
-            println("The fireball chases you and inflicts "+damage+".",25);
+            player.burn(1);
+            println("The fireball chases you and inflicts "+damage+"{Unable to heal}",25);
             println("Her flames burn even brighter!",25);
             monster.setDamage(monster.getDamage()+2);
             return true;
@@ -2240,8 +2245,9 @@ public class CE
                 curse(3);
             }
             else{
-                println(monster.getName()+" throws a fireball at you!{Burning}",30);
-                DOT(3,monster.getDamage()/3);
+                int damage=(int)((double)monster.getDamage()*1.5);
+                player.setHealth(player.getHealth()-damage);
+                println(monster.getName()+" throws a fireball at you and deals "+damage+" damage!{Unable to heal}",30);
                 cancelRest(3);
             }
             if(RN.nextInt(2)==0){
@@ -2254,7 +2260,7 @@ public class CE
                 boss = monster;
                 monster = new Monster(100,100,10,0,0,0,"The Lowly Goon",9002);
             }
-            timer(10);
+            timer(6);
             return true;
         }
         if(monster.getId()==9001&&monster.getAID()==0&&RN.nextInt(100)<=20){// Goon 1 Vanguard
@@ -2376,6 +2382,7 @@ public class CE
             if(manaPot>0){System.out.println("("+number+")Mana Flask{Regenerate 30% of missing Mana}["+manaPot+" left]");manaNum=number+"";number++;}
             if(statusPot>0){System.out.println("("+number+")Ala's Tonic{Removes all debuffs}["+statusPot+" left]");statusNum=number+"";number++;}
             if(firePot>0){System.out.println("("+number+")FireBlast Potion{Deals 10% enemy's health over three turns}["+firePot+" left]");fireNum=number+"";number++;}
+            if(goodPot>0){System.out.println("("+number+")Rignus's Good stuff{Grants immunity for one turn}["+goodPot+" left]");goodNum=number+"";number++;}
             cont=false;
         }
         System.out.println("(0)Go back");
@@ -2460,6 +2467,10 @@ public class CE
             fireBlast();
             return false;
         }
+        else if(b.equals(goodNum)&&goodPot>0){
+            player.immune(2);
+            return false;
+        }
         if(b.equals(manaNum)&&player.csaber())
         {
             System.out.println("{Cinthas} I am unable to consume this type of matter");
@@ -2513,6 +2524,12 @@ public class CE
         }
         if(stun){
             System.out.print("Stunned ");
+        }
+        if(monster.getImmune()){
+            System.out.print("Immune:"+monster.getImmuneTimer()+" ");
+        }
+        if(monster.getBurned()){
+            System.out.print("Burned:"+monster.getBurnTimer()+" ");
         }
         if(mDOT){
             System.out.print("DOT:"+mDOTTimer+"-"+mDOTScale+" ");
@@ -2573,6 +2590,14 @@ public class CE
         if(cursed){
             System.out.print("Cursed:"+curseTimer+" ");
         }
+        if(player.getImmune()&&player.getImmuneTimer()>=1){
+            int amount=player.getImmuneTimer()-1;
+            System.out.print("Immune:"+amount+" ");
+        }
+        if(player.getBurned()&&player.getBurnTimer()>=1){
+            int amount=player.getBurnTimer()-1;
+            System.out.print("Burned:"+amount+" ");
+        }
         if(DOT){
             System.out.print("DOT:"+DOTTimer+"-"+DOTScale+" ");
         }
@@ -2594,8 +2619,9 @@ public class CE
         if(restCancelled){
             System.out.print("Rest(X):"+restCancelTimer+" ");
         }
-        if(dodge){
-            System.out.print("Dodge%:"+dodgeTimer+"-"+dodgeChance+" ");
+        if(dodge&&dodgeTimer>=1){
+            int amount=dodgeTimer-1;
+            System.out.print("Dodge%:"+amount+"-"+dodgeChance+" ");
         }
         System.out.println("");
         //
