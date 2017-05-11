@@ -562,6 +562,7 @@ public class CE
 
         //--------------FIGHT PHASE--------------//
         isGuarding=false; misGuarding=false;
+        guardTimer=0; mguardTimer=0;
         sRevived=false;
         deathPrevention=false;
         removeEffects(); dodgeTimer=0; dodge=false;
@@ -570,6 +571,8 @@ public class CE
         overflow=false;manaSurge=false;split=false;
         dodgeChance=0;
         timer=999;//Boss timer
+        monster.setBurned(false);
+        cursed=false; curseTimer=0;
         if(!player.csaber())
         {
             player.setMana(startingMana);// can change for items that give extra starting mana
