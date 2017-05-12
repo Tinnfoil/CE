@@ -41,12 +41,11 @@ public class Player extends Organism
         weaponrack.add(new Weapon("swordandboard",2,2,3,0,false));
         weaponrack.add(new Weapon("staff",1,1,2,0,false));
         weaponrack.add(new Weapon("dagger",3,2,0,3,false));
-        weaponrack.add(new Weapon("csaber",0,0,0,0,false));
 
         armory.add(new Armor("tunic",20,10,2,4,0,false));//Armor is not on by default
         armory.add(new Armor("cloak",15,15,1,0,5,false));
         armory.add(new Armor("chestpiece",40,0,0,0,0,false));
-        armory.add(new Armor("robe",10,30,1,2,0,false));
+        armory.add(new Armor("robe",10,30,1,4,0,false));
         armory.add(new Armor("cowl",10,10,2,-2,-5,false));
     }
 
@@ -76,7 +75,15 @@ public class Player extends Organism
     {
         if(mana < maxmana)
         {
-             mana += manarate;
+            if(weaponrack.get(3).getEquipped()&&((double)mana/maxmana)<.5){
+                mana+=(manarate/2);
+            }
+            else if(weaponrack.get(3).getEquipped()&&((double)mana/maxmana)>=.5){
+                mana+=(manarate*2);
+            }
+            else{
+                mana += manarate;
+            }
         }
         if(mana > maxmana)
         {
@@ -302,26 +309,6 @@ public class Player extends Organism
 
     public boolean dagger(){
         return weaponrack.get(4).getEquipped();
-    }
-
-    public boolean csaber()
-    {
-        return weaponrack.get(5).getEquipped();
-    }
-
-    public boolean bblade()
-    {
-        return weaponrack.get(6).getEquipped();
-    }
-
-    public boolean gblade()
-    {
-        return weaponrack.get(7).getEquipped();
-    }
-
-    public boolean mblade()
-    {
-        return weaponrack.get(8).getEquipped();
     }
 
     public boolean tunic(){
