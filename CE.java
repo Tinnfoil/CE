@@ -1,4 +1,13 @@
 import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.*;
 /**
  * A short game with the simple goal of beating the final boss in under 10 days.
  * This is a open source code and things are open to be changed
@@ -40,6 +49,8 @@ public class CE
 
     public static Player saveFile;
 
+    public static Clip clip;
+
     //Boss
     public static boolean mDefStance, bossTimer;
     public static int timer;
@@ -52,7 +63,7 @@ public class CE
      * Main method to start the game. Where the beginning setup is made.Like cheats
      * For example: setting the day to day 5 right away, having extra gold
      */
-    public static void main(String[] args) throws InterruptedException{
+    public static void main(String[] args) throws Exception{
         gold=400;
         day=0;
         dungeon=1;
@@ -70,7 +81,7 @@ public class CE
         game.town();
     }
 
-    public void start() throws InterruptedException{
+    public void start() throws Exception{
         Scanner input= new Scanner(System.in);
         println("You see a faint light in the far distance.",10,500);
         println("Curious, you appoarch it and find a rock stuck between some boulders",10,500);
@@ -94,7 +105,7 @@ public class CE
      * Returns a value. Which represents a monster id.
      * 
      */
-    public void town() throws InterruptedException{
+    public void town() throws Exception{
         Scanner input= new Scanner(System.in);
         String a="1";
         String b="1";
@@ -375,7 +386,7 @@ public class CE
      * Type 1: Shop in the middle. Golem as boss.
      * Type 2:
      */
-    public boolean dungeon(int type, int size) throws InterruptedException{
+    public boolean dungeon(int type, int size) throws Exception{
         Random RN=new Random();
         Scanner input = new Scanner(System.in);
         dung= new int[size];
@@ -515,7 +526,7 @@ public class CE
         return false;
     }
 
-    public void printDungeon(int[] dungeon) throws InterruptedException{
+    public void printDungeon(int[] dungeon) throws Exception{
         System.out.println("Dungeon Position");
         for(int i=0;i<dungeon.length;i++){
             print("[",10);
@@ -552,7 +563,7 @@ public class CE
      * 8.DOT[D]- Damage over time.
      * 9.Action Cancel- Unable to use a certain basic action. Only player affected.
      */
-    public void fight(int id) throws InterruptedException{
+    public void fight(int id) throws Exception{
         Scanner input= new Scanner(System.in);
         Random RN= new Random();
         //--------MONSTER CREATION PHASE---------//
@@ -573,11 +584,7 @@ public class CE
         timer=999;//Boss timer
         monster.setBurned(false);
         cursed=false; curseTimer=0;
-        if(!player.csaber())
-        {
-            player.setMana(startingMana);// can change for items that give extra starting mana
-        }
-        else{player.setMana(0);}
+        player.setMana(startingMana);// can change for items that give extra starting mana
         while(infight==true){
             String a="1";
             //-----------DEBUG STATEMENTS-----------//
@@ -588,9 +595,7 @@ public class CE
             choosen=false;
             int startingHealth=player.getHealth();
             while(!choosen){// while loop to loop the action menu until the player made a choice.
-                chargeCheck();
                 healthbar(); //<--prints hp bars of monster and player
-                chargeCheck2();
 
                 printOptions();
                 System.out.print("Action:");
@@ -710,7 +715,7 @@ public class CE
             skeletonCheck();
             dodgeCheck();
             stunCheck();
-            if(!cursed&&!player.csaber()){
+            if(!cursed){
                 player.regenMana(); //regenerates mana every turn that happens
             }
             if(player.staff()){
@@ -857,11 +862,7 @@ public class CE
     /**
      * Sets guarding to true.
      */
-    public void guard() throws InterruptedException{
-        if(player.csaber()&&isGuarding==false)
-        {
-            player.setMana(player.getMana()+(int)player.getMaxMana()/10);
-        }
+    public void guard() throws Exception{
         isGuarding=true;
         println("You guard",20);
         if(guardTimer==0){
@@ -873,7 +874,7 @@ public class CE
     /**
      * Sets guard to true.
      */
-    public void mguard() throws InterruptedException{
+    public void mguard() throws Exception{
         //Wraiths does not guard, but it can miss
         if(monster.getId()==1001)
         {
@@ -1012,7 +1013,7 @@ public class CE
         dodgeChance=chance;
     }
 
-    public void skeletonCheck() throws InterruptedException{
+    public void skeletonCheck() throws Exception{
         if(monster.getId()==5&&monster.getHealth()<=0&&!sRevived){
             sRevived=true;
             monster.setHealth((int)((double)monster.getMaxHealth()*.5));
@@ -1149,7 +1150,7 @@ public class CE
         }
     }
 
-    public void goonCheck() throws InterruptedException{
+    public void goonCheck() throws Exception{
         if(bossTimer&&monster.getHealth()<=0&&monster.getId()==9001){
             boss.setDefense(boss.getDefense()-1);
             println("You defeated "+monster.getName()+" before "+bossName+" was able to recover!{-1 defense}",25);
@@ -1219,7 +1220,7 @@ public class CE
     /**
      * Call for Fireball animation and effect. FIREBALL!!!
      */
-    public void fireBlast() throws InterruptedException{
+    public void fireBlast() throws Exception{
         println("FIREBLAST!!",30);
         print("--",100);print("-\"",80);print("-_/",50);println("<*+#",40);//animation
         int damage=(int)(((double).1*monster.getHealth())/3);
@@ -1232,7 +1233,7 @@ public class CE
      * Sword and S&B ability. For the purpose of adding extra damage equal to the player's defense.
      * (S&B ability 1) & (Sword ability 1)
      */
-    public void defStance() throws InterruptedException{
+    public void defStance() throws Exception{
         defStance=true;
         println("You go into a Defensive Stance..",40);
         defStanceTimer=2;
@@ -1254,7 +1255,7 @@ public class CE
      * S&B ability that stuns the enemy. 30% if not already stunned and 100% if already stunned.
      * (S&B ability 2)
      */
-    public void shieldBash() throws InterruptedException
+    public void shieldBash() throws Exception
     {
         Random gen = new Random();
         int damage =player.getDamage();
@@ -1290,7 +1291,7 @@ public class CE
      * Call for Wide Slash animation and effect. (Hatchet Ability 1)
      * 
      */
-    public void wildSlash() throws InterruptedException
+    public void wildSlash() throws Exception
     {
         println("WILD SLASH!",65);
         wildSlash=true;
@@ -1308,7 +1309,7 @@ public class CE
      * Calls for war cry ability. Exchanges 40 mana for 20 crit chance with a 1% chance for additional
      * 10 crit; (Hatchet ability 2)
      */
-    public void warCry() throws InterruptedException
+    public void warCry() throws Exception
     {
         println("Grand strength of the gods, come to me!!!", 40);
         player.setCrit(player.getCrit()+20);
@@ -1336,7 +1337,7 @@ public class CE
     /**
      * Calls staff ability 1 which does 20% of the player's mana as damage
      */
-    public void manaSurge() throws InterruptedException
+    public void manaSurge() throws Exception
     {
         if(overflow){
             print("EXPL",50);print("OOOOO",30);println("SION!!!",10);
@@ -1357,7 +1358,7 @@ public class CE
     /**
      * Casts staff ability 2 which redirects damage taken for a turn toward the enemy
      */
-    public void split() throws InterruptedException
+    public void split() throws Exception
     {
         if(overflow){
             println("You create two clones to assist you",20);
@@ -1375,19 +1376,19 @@ public class CE
         splitTimer=3;
     }
 
-    public void daggerCheck() throws InterruptedException{
+    public void daggerCheck() throws Exception{
         player.setMana(player.getMana()-2);
         player.setHealth(player.getHealth()-2-(wrathStacks/2));
     }
 
-    public void fPact() throws InterruptedException{
+    public void fPact() throws Exception{
         int heal= player.getHeal()+25;
         player.setHealth(player.getHealth()+heal);
         println("You curse yourself and heal for "+heal+" health",15);
         curse(3);
     }
 
-    public void wrath() throws InterruptedException{
+    public void wrath() throws Exception{
         print("FACE",50);print(" ",100);print("MY",50);print(" ",100);println("WRATH!!!",30);
         for(int i=0;i<wrathStacks;i++){
             wrathPass=true;
@@ -1401,162 +1402,6 @@ public class CE
         }
         curse(3);
         wrathStacks=0;
-    }
-
-    public void chargeCheck()
-    {
-        if(player.csaber())
-        {
-            if(damageDealt>=40)
-            {
-                player.setMana(player.getMana() + (int)player.getMaxMana()/10);
-                damageDealt-=40;
-                chargeCheck();
-            }
-            if(lastTurnHp-player.getHealth()>=20)
-            {
-                player.setMana(player.getMana() + (int)player.getMaxMana()/10);
-            }
-        }
-    }
-
-    public void chargeCheck2() throws InterruptedException
-
-    {
-        if(player.csaber())
-        {
-
-            if(sixthCheck==true)
-            {
-                println("{Cinthas}Expending total energy stored. (temporary buffs removed)",20);
-                println("{Cinthas}All charges depleted, returning to normal operational state.",20);
-                player.updateStats();
-                resetChecks();
-            }
-            if(fifthCheck==true)
-            {
-                fifthCheck=false;
-                overHeat();
-                player.setMana(0);
-                sixthCheck=true;
-            }
-            if(player.getMana()>=3*(int)player.getMaxMana()/10&&firstCheck==false)
-            {
-                System.out.println("{Cinthas} Charge at 25%, increasing blade output.(+4 damage)");
-                player.setDamage(player.getDamage()+4);
-                firstCheck=true;
-            }
-            if(player.getMana()>=5*(int)player.getMaxMana()/10&&secondCheck==false)
-            {
-                System.out.println("{Cinthas} Charge at 50%, routing power to life support. (+5 heal)");
-                player.setHeal(player.getHeal()+3);
-                secondCheck=true;
-            }
-            if(player.getMana()>=7*(int)player.getMaxMana()/10&&thirdCheck==false)
-            {
-                System.out.println("{Cinthas} Charge at 75%, routing power to defensive systems. (+3 defense)");
-                player.setDefense(player.getDefense()+3);
-                thirdCheck=true;
-            }
-            if(player.getMana()>=9*(int)player.getMaxMana()/10&&fourthCheck==false)
-            {
-                System.out.println("{Cinthas} Charge at full compatacity. (Death prevention active!)");
-                deathPrevention = true;
-                fourthCheck = true;
-            }
-            if(player.getMana()==player.getMaxMana()&&fifthCheck==false)
-            {
-                System.out.println("{Cinthas} WARNING CHARGE EXECEEDING MAX COMPACITY, proceeding to execute badass stuff (next turn OverHeat");
-                fifthCheck=true;
-            }
-        }
-    }
-
-    public void deployCinthas() throws InterruptedException
-    {
-        println("{Cinthas} Switching to active mode.",30);
-        println("{Cinthas} CINTHAS KILL THE BAD GUY",30);
-        monster.setHealth(monster.getHealth()-2*player.getDamage()+monster.getDefense());
-        System.out.println("Cinthas does "+(monster.getHealth()-2*player.getDamage()+monster.getDefense())+" to "+monster.getName());
-        println("{Cinthas} Proceeding to protect user from not dead bad guy.",30);
-        player.immune(2);
-    }
-
-    public void useCharge() throws InterruptedException
-    {
-        Scanner input = new Scanner(System.in);
-        println("{Cinthas} Please select the charge you would like",25);
-        System.out.println("0-Burst");
-        System.out.println("1-Brawler");
-        System.out.println("2-Guardian");
-        System.out.println("3-Health");
-        System.out.println("4-Purifying");
-        System.out.println("5-Magics");
-        int currentType = input.nextInt();
-        if(currentType==0)
-        {
-            println("{Cinthas} Deploying burst charge",30);
-            Random gen = new Random();
-            int inflicted;
-            if(gen.nextInt()+1<=player.getCrit())
-            {
-                inflicted = (int)(player.getDamage()*1.5);
-                println("{Cinthas}Your shot seems to have hit a weakpoint! (critial hit)",25);
-            }
-            else 
-            {inflicted = player.getDamage();}
-            monster.setHealth(monster.getHealth()-inflicted);
-            println("Your charge does "+inflicted+" to "+monster.getName(),30);
-        }
-        else if(currentType==1)
-        {
-            println("{Cinthas} Deploying brawler charge",30);
-            attackUp(3,3);
-        }
-        else if(currentType==2)
-        {
-            println("{Cinthas} Deploying guardian charge",30);
-            defenseUp(3,3);
-        }
-        else if(currentType==3)
-        {
-            println("{Cinthas} Deploying health charge",30);
-            player.setHealth(player.getHealth()+10);
-        }
-        else if(currentType==4)
-        {
-            println("{Cinthas} Deploying purifying charge",30);
-            removeEffects();
-        }
-        else if(currentType==5)
-        {
-            println("{Cinthas} Deploying magics charge",30);
-            Random gen = new Random();
-            int temp = gen.nextInt()+1;
-            if(temp<36)
-            {
-                mDOT(4,2);
-            }
-            if(temp>64)
-            {
-                stun(2);
-            }
-            if(temp>36&&temp<64)
-            {
-                println("{Cinthas} It seems the charge failed...",30);
-            }
-        }
-
-    }
-
-    public void overHeat() throws InterruptedException
-    {
-        print("MAXIMUM",30);
-        println(" OOOOOOOOOOOOOOOUUUUUUUUUUUUUTTTTTTTTTTTTPPPPPPPPPPUUUUUUUUUUUUTTTTTTTTT!!!!!!",20);
-        int inflicted = player.getDamage()*4;
-        monster.setHealth(monster.getHealth()+monster.getDefense()-inflicted);
-        println("You deal "+inflicted+" to "+monster.getName(),30);
-        choosen=true;
     }
 
     public void removeEffects(){
@@ -1584,7 +1429,7 @@ public class CE
      * player.damage() and is reduced by monster's defense. No damage will be dealt if defense is too high.
      * Also prints how much damage is done.
      */
-    public void attack() throws InterruptedException{
+    public void attack() throws Exception{
         Random gen = new Random();
         Random RN= new Random();
         int atk = player.damage();
@@ -1674,7 +1519,7 @@ public class CE
      * //+
      * Monster attacks like player only use its raw attack instead of the player exclusive damage().
      */
-    public void mattack() throws InterruptedException{
+    public void mattack() throws Exception{
         Random RN= new Random();
         int atk = monster.getDamage();
         int def = player.getDefense();
@@ -1733,20 +1578,15 @@ public class CE
     /**
      * The third basic action for a player. Regenerates health and mana equal to their respective stats.
      */
-    public void rest() throws InterruptedException{
+    public void rest() throws Exception{
         player.heal();
         if(!cursed){// Yes, even curse will prevent this.
             int regen= player.getManaRegen();
-            if(!player.csaber())
-            {
-                player.setMana(player.getMana()+regen);
-                print(" and regenerated "+regen+" mana",10);
-            }
         }
         System.out.println();
     }
 
-    public void initializeMonster(int id) throws InterruptedException{
+    public void initializeMonster(int id) throws Exception{
         if(id==1){
             monster= new Monster(140,140,6,2,0,0,"The Slime",1);
             System.out.println("You find a "+monster.getName().substring(3)+"");
@@ -1840,7 +1680,7 @@ public class CE
      * Since monsters shouldn't use a basic action and a special at teh same time.
      * @param id The id of the monster.
      */
-    public boolean mCast(int id) throws InterruptedException{
+    public boolean mCast(int id) throws Exception{
         Random RN= new Random();
         //-----------MONSTER SPECIALS----------//
         if(id==1&&monster.getAID()==0&&monster.getHealth()<=70&&RN.nextInt(100)<=10){//Slime
@@ -2059,6 +1899,7 @@ public class CE
         //Witch
         if(monster.getId()==102&&monster.healthPercentage()<1&&monster.getAID()<3)
         {
+            println("{Summer Witch} Woohoo! Its about to get hot up in here!");
             println(monster.getName()+ " displays her searing flames.",25);
             int damage = (int)(monster.getDamage()*1.5-(double)player.getDefense());
             println("The searing flames inflicts " + damage+ "{Unable to heal}",25);
@@ -2313,7 +2154,7 @@ public class CE
     /**
      * determines if the witch changes forms befor attacking
      */
-    public void witchPass() throws InterruptedException
+    public void witchPass() throws Exception
     {
         Random gen = new Random();
         if(gen.nextInt(100)<=10)
@@ -2375,11 +2216,6 @@ public class CE
             System.out.println("(1)Forbidden Pact{Heal for 25+player's heal and curse yourself for 3 turns}[20 Mana]");
             System.out.println("(2)Wrath{For every wrath stack, attack(1/2 Damage) for the same amount of times curse yourself}[30 Mana]");
         }
-        else if(player.csaber())
-        {
-            System.out.print("(1)Deploy Cinthas {Allow Cinthas to take his true form, granting immunity this turn and deals double damage}[6 charges]");
-            System.out.print("(2)Use Charge {Cast one of multiple abilities}[1 charge]");
-        }
         boolean cont=true;
         int number=3;
         while(cont){
@@ -2393,7 +2229,7 @@ public class CE
         System.out.println("(0)Go back");
     }
 
-    public boolean useAbility(String b) throws InterruptedException{
+    public boolean useAbility(String b) throws Exception{
         if(b.equals("1")&&player.hatchet()&&useMana(40)){
             wildSlash();
             return true;
@@ -2438,16 +2274,6 @@ public class CE
             wrath();
             return true;
         }
-        else if(b.equals("1")&&player.csaber()&&useMana(6*(int)player.getMaxMana()/10))
-        {
-            deployCinthas();
-            return false;
-        }
-        else if(b.equals("2")&&player.csaber()&&useMana((int)player.getMaxMana()/10))
-        {
-            useCharge();
-            return false;
-        }
         else if(b.equals(healthNum)&&healthPot>0){
             healthPot--;
             int heal=player.getHeal()+20;
@@ -2455,7 +2281,7 @@ public class CE
             player.setHealth(player.getHealth()+heal);
             return false;
         }
-        else if(b.equals(manaNum)&&manaPot>0&&!player.csaber()){
+        else if(b.equals(manaNum)&&manaPot>0){
             manaPot--;
             int regen=(int)(((double)player.getMaxMana()-(double)player.getMana())*0.3);
             println("You regenerate "+regen+" mana!",35);
@@ -2476,15 +2302,13 @@ public class CE
             player.immune(2);
             return false;
         }
-        if(b.equals(manaNum)&&player.csaber())
+        if(b.equals(manaNum))
         {
             System.out.println("{Cinthas} I am unable to consume this type of matter");
         }
         return false;
     }
 
-    public void castAbilities() throws InterruptedException{
-    }
     //-----------------------------------------------------------------------------//
 
     /**
@@ -2495,10 +2319,6 @@ public class CE
         if(player.dagger()){
             int loss=wrathStacks/2;
             System.out.print(loss);
-        }
-        else if(player.csaber())
-        {
-            System.out.print(damageDealt+"/40");
         }
         else{System.out.print(" ");}
         System.out.print(" HP[");
@@ -2544,14 +2364,7 @@ public class CE
         }
         System.out.println();
         int manabars=((player.getMana()*10)/player.getMaxMana());
-        if(player.csaber())
-        {
-            System.out.print("  Charge[");
-        }
-        else
-        {
-            System.out.print("Mana[");
-        }
+        System.out.print("Mana[");
 
         for(int i=0;i<10;i++){
             if(manabars>0){
@@ -2562,13 +2375,8 @@ public class CE
             }
         }
         System.out.print("]");
-        if(player.csaber())
-        {
-            System.out.print((int)(player.getMana()/(int)(player.getMaxMana()/10)));
-        }
-        else{
-            System.out.print(player.getMana());
-        }
+        System.out.print(player.getMana());
+
         //Status timer indicators
         System.out.print("   ");
         if(player.staff()&&overflow){
@@ -2632,7 +2440,7 @@ public class CE
         //
     }
 
-    public int goldFound(int id) throws InterruptedException{
+    public int goldFound(int id) throws Exception{
         Random RN = new Random();
         int goldfound=0;
         if(id==1){
@@ -2671,7 +2479,7 @@ public class CE
         return goldfound;
     }
 
-    public void levelCheck(int exp) throws InterruptedException{
+    public void levelCheck(int exp) throws Exception{
         int lvl=player.getLevel();
         if(exp>=4000){
             player.setLevel(16); 
@@ -2731,7 +2539,7 @@ public class CE
 
     //-------------------------MISC-----------------------------//
 
-    public void printOptions() throws InterruptedException{
+    public void printOptions() throws Exception{
         if(!confused){    
             if(!attackCancelled){System.out.println("(1)Attack");}
             else{System.out.println("(1)------");}
@@ -2760,7 +2568,7 @@ public class CE
         }
     }
 
-    public void playerOptions() throws InterruptedException{
+    public void playerOptions() throws Exception{
         Scanner input= new Scanner(System.in);
         boolean done=true;
         while(done){
@@ -2825,7 +2633,6 @@ public class CE
                 if(player.getWeaponRack().get(2).getOwned()==true){System.out.println("(2)Sword and Shield");}
                 if(player.getWeaponRack().get(3).getOwned()==true){System.out.println("(3)Msgical Staff");}
                 if(player.getWeaponRack().get(4).getOwned()==true){System.out.println("(4)Cursed dagger");}
-                if(player.getWeaponRack().get(5).getOwned()==true){System.out.println("(6)Charge Blade");}
                 String c=input.next();
                 printWeapons(c);
                 if(c.equals("1")&&player.getWeaponRack().get(1).getOwned()==true){
@@ -2843,10 +2650,6 @@ public class CE
                 else if(c.equals("4")&&player.getWeaponRack().get(4).getOwned()==true){
                     println("You have equipped the Cursed Dagger",20);
                     player.setWeapon("dagger");
-                }
-                else if(c.equals("5")&&player.getWeaponRack().get(5).getOwned()==true){
-                    println("You have equipped the Charge Blade",20);
-                    player.setWeapon("csaber");
                 }
             }
             else if(b.equals("3")){
@@ -2888,7 +2691,7 @@ public class CE
         }
     }
 
-    public boolean printWeapons(String c) throws InterruptedException{
+    public boolean printWeapons(String c) throws Exception{
         Scanner input= new Scanner(System.in);
         if(c.equals("1")){
             System.out.println("Hatchet:");
@@ -2974,38 +2777,10 @@ public class CE
                 }
             }
         }
-        else if(c.equals("5"))
-        {
-            System.out.println("Charge Saber:");
-            System.out.println("Passive: Negates all mana restoration and starting mana; replaced with charges gained after certain actions.Max 10");
-            System.out.println("         To gain Charge: dealing 40 dmg in total, guarding(from not guarding), taking 20 damage in one turn.");
-            System.out.println("         Reaching 10 charges will automatically trigger OverHeat(automatically deal x4 damage to enemy)");
-            System.out.println("         Certain levels of charge give bonuses *Reaching the level will trigger bonus and going down will not remove buffs, unless player OverHeats ");
-            System.out.println("         3 Charge-4 damage, 5 Charge-3 heal, 7 Charge-3 defense, 9 Charge-death prevention)");
-            System.out.println("Deploy Cinthas: Consumes 6 charges to deal double damage to the enemy.");
-            System.out.println("                Also grants immunity for a turn.");
-            System.out.println("Use Charge: Deploy a charge to active different abilities");
-            System.out.println("            i.e deal pure damage, 3 atk up for 3 turns, 3 def up for 3 turns,");
-            System.out.println("            heal, cure ailments, 70% chance to inflict random status");
-            player.printWeaponStats("csaber"); 
-            if(!player.getWeaponRack().get(5).getOwned()){
-                System.out.println("(1)Buy");
-                System.out.println("(2)Don't Buy");
-                String d= input.next();
-                if(d.equals("1")&&canBuy(100))
-                {
-                    println("You bought the Charge Saber",20);
-                    println("The engraved text reads '{Cinthas}'",10);
-                    player.getWeaponRack().get(5).setOwned(true);
-                    player.setWeapon("csaber");
-                    return false;
-                }
-            }
-        }
         return true;
     }
 
-    public boolean printArmors(String c) throws InterruptedException{
+    public boolean printArmors(String c) throws Exception{
         Scanner input= new Scanner(System.in);
         if(c.equals("1")){//where to buy armor
             System.out.println("Goblin Tunic:");
@@ -3097,7 +2872,7 @@ public class CE
         return true;
     }
 
-    public void tutorial() throws InterruptedException{
+    public void tutorial() throws Exception{
         Scanner input= new Scanner(System.in);
         println("You decide to get the strange rock stuck between the neighboring ones",20,500);
         println("However, the rock jumps out of your hand and it begins to float in the air!",20,500);
@@ -3219,7 +2994,7 @@ public class CE
         String a= input.next();
     }
 
-    public boolean useMana(int amount) throws InterruptedException{
+    public boolean useMana(int amount) throws Exception{
         if(player.getMana()>=amount){
             player.setMana(player.getMana()-amount);
             return true;
@@ -3245,7 +3020,7 @@ public class CE
         return true;
     }
 
-    public void sashaPass() throws InterruptedException{
+    public void sashaPass() throws Exception{
         Random RN= new Random();
         if(sasha&&RN.nextInt(100)<=10){
             e.sashaTalk();
@@ -3259,7 +3034,7 @@ public class CE
      * Prints a given String with a delay between letters.
      * Ex. print("hello",100); -->prints and finishes hello in 500 miliseconds
      */
-    public void print(String str, int delay) throws InterruptedException{
+    public void print(String str, int delay) throws Exception{
         for(int i=0;i<str.length();i++){
             System.out.print(str.charAt(i));
             Thread.sleep(delay);
@@ -3270,7 +3045,7 @@ public class CE
      * Prints a given String with a delay between letters.
      * Ex. print("hello",100); -->prints and finishes hello in 500 miliseconds
      */
-    public void print(String str, int delay, int pause) throws InterruptedException{
+    public void print(String str, int delay, int pause) throws Exception{
         for(int i=0;i<str.length();i++){
             System.out.print(str.charAt(i));
             Thread.sleep(delay);
@@ -3281,7 +3056,7 @@ public class CE
     /**
      * Prints given String but with a line added in the end
      */
-    public void println(String str, int delay) throws InterruptedException{
+    public void println(String str, int delay) throws Exception{
         for(int i=0;i<str.length();i++){
             System.out.print(str.charAt(i));
             Thread.sleep(delay);
@@ -3292,13 +3067,49 @@ public class CE
     /**
      * Prints given String but with a line added in the end
      */
-    public void println(String str, int delay, int pause) throws InterruptedException{
+    public void println(String str, int delay, int pause) throws Exception{
         for(int i=0;i<str.length();i++){
             System.out.print(str.charAt(i));
             Thread.sleep(delay);
         }
         System.out.println();
         Thread.sleep(pause);
+    }
+
+    /**
+     * Prints a given String with a delay between letters.
+     * Ex. print("hello",100); -->prints and finishes hello in 500 miliseconds
+     */
+    public static void println(String str, int delay, int pause, String name) throws Exception{
+        try
+        {
+            File file = new File("E:\\hddfbcf\\"+name+".wav");
+            AudioInputStream sound = AudioSystem.getAudioInputStream(file);
+            clip = AudioSystem.getClip();
+            clip.open(sound);
+            clip.setFramePosition(0);  // Must always rewind!
+            clip.start();
+            int total=0;
+            for(int i=0;i<str.length();i++){
+                System.out.print(str.charAt(i));
+                Thread.sleep(delay);
+                total=total+delay;
+            }
+            System.out.println();
+            if((clip.getMicrosecondLength()/1000)>total){
+                Thread.sleep((clip.getMicrosecondLength()/1000)-total);
+            }
+            Thread.sleep(pause);
+        }
+        catch(Exception e)
+        {
+            for(int i=0;i<str.length();i++){
+                System.out.print(str.charAt(i));
+                Thread.sleep(delay);
+            }
+            System.out.println();
+            Thread.sleep(pause);
+        }
     }
 
     public void endGame(){
