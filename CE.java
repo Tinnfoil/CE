@@ -320,7 +320,6 @@ public class CE
                             if(!player.getWeaponRack().get(2).getOwned()){System.out.println("(2)Shield{Adds on sword}[100 Gold]");}
                             if(!player.getWeaponRack().get(3).getOwned()){System.out.println("(3)Magical Staff[100 Gold]");}
                             if(!player.getWeaponRack().get(4).getOwned()){System.out.println("(4)Cursed dagger[100 Gold]");}
-                            if(!player.getWeaponRack().get(5).getOwned()){System.out.println("(5)Charge Saber[100 Gold]");}
                             System.out.println("(0)Go back");
                             String c= input.next();
                             if(!c.equals("0")){
