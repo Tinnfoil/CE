@@ -39,7 +39,7 @@ public class CE
     //Timers for ablities/mechanics
     public static int guardTimer, guardAmount, mguardTimer, multiplier, defStanceTimer, trueBurst, amount, splitAmount, atksLeft, splitTimer, confuseTimer,curseTimer, DOTTimer, mDOTTimer, stunTimer,
     dodgeChance,dodgeTimer, attackCancelTimer, guardCancelTimer, restCancelTimer, boostingTimer,  atkDownTimer,
-    atkUpTimer, defUpTimer;
+    atkUpTimer, defUpTimer, warCryCount, turnTimer;
 
     //+
     //Misc.
@@ -320,6 +320,7 @@ public class CE
                             if(!player.getWeaponRack().get(2).getOwned()){System.out.println("(2)Shield{Adds on sword}[100 Gold]");}
                             if(!player.getWeaponRack().get(3).getOwned()){System.out.println("(3)Magical Staff[100 Gold]");}
                             if(!player.getWeaponRack().get(4).getOwned()){System.out.println("(4)Cursed dagger[100 Gold]");}
+                            if(!player.getWeaponRack().get(5).getOwned()){System.out.println("(5)Charge Saber[100 Gold]");}
                             System.out.println("(0)Go back");
                             String c= input.next();
                             if(!c.equals("0")){
@@ -583,6 +584,8 @@ public class CE
         timer=999;//Boss timer
         monster.setBurned(false);
         cursed=false; curseTimer=0;
+        warCryCount=0;
+        turnTimer = 0;
         player.setMana(startingMana);// can change for items that give extra starting mana
         while(infight==true){
             String a="1";
@@ -729,7 +732,6 @@ public class CE
             curseCheck();//Checks if the player is curse.
             defStanceCheck();//Sword's/Sword&Board ability. 
             hatchetPass();//The passive buff from the hatchet weapon.
-            DOTCheck();//In case player is taking any extra damage not from attacks.
             mDOTCheck();//In case monster takes any extra damage not from attacks. 
             boostingCheck();//In the casa boosting is active for a monster;
             attackDownCheck();
@@ -741,10 +743,12 @@ public class CE
             player.immuneCheck();
             goonCheck();
             lastTurnHp=player.getHealth();
+            turnTimer++;
             if(deathCheck()){// HAS TO BE IN THE BOTTOM OF STATUS EFFECTS
                 infight=false;
                 break;
             }
+            DOTCheck();//In case player is taking any extra damage not from attacks.
             //--------------------------------------//
 
             //-----------MONSTER TURN---------------//
@@ -1310,6 +1314,7 @@ public class CE
      */
     public void warCry() throws Exception
     {
+        warCryCount++;
         println("Grand strength of the gods, come to me!!!", 40);
         player.setCrit(player.getCrit()+20);
         Random gen= new Random();
@@ -1461,7 +1466,7 @@ public class CE
             }
         }
         if(player.chestpiece()){
-            atk+=(player.getHeal()/2);
+            atk+=(player.getHeal());
         }
         if(manaSurge&&atksLeft==0){
             atk+=amount; amount=0;
@@ -1805,7 +1810,7 @@ public class CE
 
         if(id==13&&monster.getAID()==0&&monster.healthPercentage()<=.9&&RN.nextInt(100)<=20){//Orc
             e.printAngryOrc();
-            println(monster.getName()+" bashes you with his shield and does "+monster.getDamage()+" damage!",20);
+            println(monster.getName()+" bashes you with his club and does "+monster.getDamage()+" damage!",20);
             player.setHealth(player.getHealth()-monster.getDamage());
             confuse(2);
             monster.setAID(1);
@@ -1822,7 +1827,8 @@ public class CE
             int damage= monster.getDamage()*2;
             println("You take "+damage+" damage.",15);
             player.setHealth(player.getHealth()-damage);
-            DOT(3,monster.getDamage()/2);
+            DOT(2,monster.getDamage()/2);
+            player.burn(2);
             monster.setAID(0);
             return true;
         }
@@ -1860,7 +1866,7 @@ public class CE
             return true;
         }
 
-        if(id==101&&monster.getAID()==0&&monster.healthPercentage()<=.8&&(!attackCancelled&&!guardCancelled&&!restCancelled)){//Knight
+        if(id==101&&monster.getAID()==0&&(turnTimer>=5||monster.healthPercentage()<=.8)&&(!attackCancelled&&!guardCancelled&&!restCancelled)){//Knight
             println(monster.getName()+" curses you!",20);
             curse(3);
             monster.setAID(RN.nextInt(3)+2);
@@ -1898,7 +1904,6 @@ public class CE
         //Witch
         if(monster.getId()==102&&monster.healthPercentage()<1&&monster.getAID()<3)
         {
-            println("{Summer Witch} Woohoo! Its about to get hot up in here!");
             println(monster.getName()+ " displays her searing flames.",25);
             int damage = (int)(monster.getDamage()*1.5-(double)player.getDefense());
             println("The searing flames inflicts " + damage+ "{Unable to heal}",25);
@@ -2042,7 +2047,7 @@ public class CE
             monster.setAID(2);
         }
 
-        if(monster.getId()==9999&&monster.healthPercentage()<=.95&&monster.getAID()==0){//boss
+        if(monster.getId()==9999&&(turnTimer>=5||monster.healthPercentage()<=.95)&&monster.getAID()==0){//boss
             println(monster.getName()+" hits you and cancels your guard!",35);
             cancelGuard(1);
             monster.setAID(1);
@@ -2159,6 +2164,7 @@ public class CE
         if(gen.nextInt(100)<=10)
         {
             int temp = gen.nextInt(4)+1;
+            turnTimer=0;
             if(temp==1)
             {
                 monster = new Monster(monster.getHealth(),300,10,4,0,7,"The Summer Witch",102);
@@ -2233,10 +2239,14 @@ public class CE
             wildSlash();
             return true;
         }
-        else if(b.equals("2")&&player.hatchet()&&useMana(40))
+        else if(b.equals("2")&&player.hatchet()&&warCryCount<4&&useMana(40))
         {
             warCry();
             return true;
+        }
+        else if(b.equals("2")&&player.hatchet()&&warCryCount>4&&useMana(40))
+        {
+            println("You decide not to push your luck with the gods.");
         }
         else if(b.equals("1")&&(player.swordandboard()||player.sword())&&useMana(30))
         {
@@ -2431,7 +2441,7 @@ public class CE
         if(restCancelled){
             System.out.print("Rest(X):"+restCancelTimer+" ");
         }
-        if(dodge&&dodgeTimer>=1){
+        if(dodge&&dodgeTimer>1){
             int amount=dodgeTimer-1;
             System.out.print("Dodge%:"+amount+"-"+dodgeChance+" ");
         }
@@ -2699,6 +2709,7 @@ public class CE
             System.out.println("            Can cause bleed based on player's crit chance. (x1.5 player's damage over 3 turns)");
             System.out.println("Warcry: Gain 20% critical chance for the rest of the fight. 1% chance to be 30% gain instead.[40 Mana]");
             System.out.println("        Takes up a turn");
+            System.out.println("        Maximum cast of 3 times per battle.");
             player.printWeaponStats("hatchet");
             if(!player.getWeaponRack().get(1).getOwned()){
                 System.out.println("(1)Buy");
