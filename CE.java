@@ -320,7 +320,6 @@ public class CE
                             if(!player.getWeaponRack().get(2).getOwned()){System.out.println("(2)Shield{Adds on sword}[100 Gold]");}
                             if(!player.getWeaponRack().get(3).getOwned()){System.out.println("(3)Magical Staff[100 Gold]");}
                             if(!player.getWeaponRack().get(4).getOwned()){System.out.println("(4)Cursed dagger[100 Gold]");}
-                            if(!player.getWeaponRack().get(5).getOwned()){System.out.println("(5)Charge Saber[100 Gold]");}
                             System.out.println("(0)Go back");
                             String c= input.next();
                             if(!c.equals("0")){
@@ -616,10 +615,10 @@ public class CE
                 if(a.equals("4")){
                     player.printStats();// Prints the player's stats
                     if(player.hatchet()){
-                        System.out.print(" "+multiplier+" ");
+                        System.out.print("Base Damage:"+multiplier+" ");
                     }
                     if(player.cowl()){
-                        System.out.print("Enemy's Defense:"+monster.getHealth()+" ");
+                        System.out.print("Enemy's Defense:"+monster.getDefense()+" ");
                     }
                     System.out.println("");
 
@@ -1160,6 +1159,7 @@ public class CE
             println(""+bossName+": Incompetent underling...",20);
             monster= new Monster(100,100,0,0,0,0,"",0);
             monster = boss;
+            monster.printStats();
             monster.setAID(0);
             bossTimer=false;
         }
@@ -1169,6 +1169,7 @@ public class CE
             println(monster.getName()+": What a useless bonobo...",20);
             monster= new Monster(100,100,0,0,0,0,"",0);
             monster = boss;
+            monster.printStats();
             monster.setAID(0);
             bossTimer=false;
         }
@@ -1177,6 +1178,7 @@ public class CE
             println(""+bossName+": Well done, go and rest my underling.",20);
             monster = new Monster(100,100,0,0,0,0,"",0);
             monster = boss;
+            monster.printStats();
             monster.setAID(0);
             monster.setHealth(monster.getHealth()+30);
             bossTimer=false;
@@ -1476,7 +1478,7 @@ public class CE
             atk+=amount;
         }
         if(defStance&&isGuarding){//Sword's defStance ability.
-            atk+=5;
+            atk+=(player.getDefense()*2);
         }
         if(player.dagger()&&wrathPass==true){
             wrathPass=false;
@@ -1785,6 +1787,7 @@ public class CE
             println("Those rocks that you've been knocking off the being seem to allow it to move more easily.",35);
             monster.setDamage(monster.getDamage()+5);
             monster.setDefense(monster.getDefense()/2);
+            monster.printStats();
             monster.setAID(1);
             return true;
         }
@@ -1794,6 +1797,7 @@ public class CE
             println("All the rocks have fallen off its body, now its time for the real fight!",35);
             monster.setDamage(monster.getDamage()+5);
             monster.setDefense(monster.getDefense()/2);
+            monster.printStats();
             monster.setAID(2);
             return true;
         }
@@ -1861,6 +1865,7 @@ public class CE
             else
             {
                 println(monster.getName()+" comes out of its shell.",20);
+                monster.setDefense(monster.getDefense()-10);
             }
             monster.setAID(monster.getAID()+1);
             return true;
@@ -2104,11 +2109,13 @@ public class CE
                 println(monster.getName()+": Come her soldier! Assist me!",30);
                 boss = monster;
                 monster = new Monster(100,100,7,2,0,0,"The Iron Vanguard",9001);
+                monster.printStats();
             }
             else{
                 println(monster.getName()+": Henchman! Take care of this nusiance",30);
                 boss = monster;
                 monster = new Monster(100,100,10,0,0,0,"The Lowly Goon",9002);
+                monster.printStats();
             }
             timer(6);
             return true;
@@ -2182,6 +2189,7 @@ public class CE
                 monster = new Monster(monster.getHealth(),300,5,4,20,5,"The Spring Witch",105);
             }
             println("The Witch transformed to "+monster.getName()+"!",20);
+            monster.printStats();
         }
     }
 
@@ -2246,7 +2254,7 @@ public class CE
         }
         else if(b.equals("2")&&player.hatchet()&&warCryCount>4&&useMana(40))
         {
-            println("You decide not to push your luck with the gods.");
+            println("You decide not to push your luck with the gods.",20);
         }
         else if(b.equals("1")&&(player.swordandboard()||player.sword())&&useMana(30))
         {
@@ -2906,7 +2914,7 @@ public class CE
         int i=0;
         monster= new Monster(999,999,0,0,0,0,"The Rock",0);
         boolean chosen=false;
-        while(i<6){
+        while(i<=6){
             if(i==0){
                 println("Pepo: Use that sword of yours and cut that rock like a samurai!",20,500);
                 println("Pepo: Using attack will deal a certain amount of damage. It can crit and is reduced by how much defense the enemy has.",20,500);
@@ -2920,12 +2928,11 @@ public class CE
             }
             if(i==3){
                 println("Pepo:Betta watch it though! Your health matters too!",20,500);
-                println("Pepo:Guess what happens when your health goes to zero...",20,500);
-                println("Pepo:First you are disapointed of the fact that you failed at life...",20,500);
-                println("     Then you die",10,500);
+                println("Pepo:Guess what happens when your health goes to zero...",20,700);
+                println("Pepo:You die",20,500);
             }
             if(i==4){
-                println("Pepo:Using guard will increase your defense by 5 and half of your level for three turns",20,500);
+                println("Pepo:Using guard will increase your defense by 5 plus half of your level for three turns",20,500);
             }
             if(i==5){
                 println("Pepo:Member' that these rocks are small fry and stronger ones will actually attack you",20,500);
