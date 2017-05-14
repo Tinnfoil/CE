@@ -1907,40 +1907,30 @@ public class CE
         }
 
         //Witch
-        if(monster.getId()==102&&monster.healthPercentage()<1&&monster.getAID()<3)
+        if(monster.getId()==102&&monster.healthPercentage()<1)
         {
-            println(monster.getName()+ " displays her searing flames.",25);
+            println("{Summer Witch} Its about to get hot up in here!",25,0,"SuWitch 5");
+            println("The witch envelopes herself in flames.",25);
             int damage = (int)(monster.getDamage()*1.5-(double)player.getDefense());
-            println("The searing flames inflicts " + damage+ "{Unable to heal}",25);
-            player.setHealth(player.getHealth()-damage);
-            player.burn(2);
-            if(RN.nextInt(10)>4)
+            println("The searing flames inflicts " + damage+ "damage",25);
+            Random gen = new Random();
+            if(gen.nextInt(10)<=2)
             {
-                println("You escape the flames, but your pants are still on fire!!!{Burning}",25);
-                DOT(4,monster.getDamage());
+                println("{Summer Witch} Wanna to be well done?",25,0,"SuWitch 3");
+                player.burn(2);
+                println("You are burned from the witch's attack! {burned}",25);
             }
-            monster.setAID(monster.getAID()+1);
-            if(monster.getAID()==3)
+            if(gen.nextInt(4)==1)
             {
-                println("Her flames now seem to change...", 25);
-                println("Her flames now burn of blue hue.",25);
+                println("{Summer Witch} Its about to get lit!!!",25,0,"SuWitch 2");
+                println("The witch's flames seem to be getting even hotter!",25);
+                monster.setDamage(monster.getDamage()+1);
             }
-            return true;
-        }
-        if(monster.getId()==102&&monster.healthPercentage()<.5&&monster.getAID()<6&&monster.getAID()>3)
-        {
-            e.printAngryWitch();
-            println(monster.getName()+" forms a blue fireball and fires it",25);
-            int damage = (int)(monster.getDamage()*1.5-(double)player.getDefense());
-            player.burn(1);
-            println("The fireball chases you and inflicts "+damage+"{Unable to heal}",25);
-            println("Her flames burn even brighter!",25);
-            monster.setDamage(monster.getDamage()+2);
             return true;
         }
         if(monster.getId()==103&&monster.healthPercentage()<1&&monster.getAID()==0)
         {
-            println("{Fall Witch} Go away...",25,0,"FWitch 4");
+            println("{Autumn Witch} Go away...",25,0,"FWitch 4");
             monster.setDefense(monster.getDefense()+2);
             mattack();
             monster.setAID(1);
@@ -1948,7 +1938,7 @@ public class CE
         }
         if(monster.getId()==103&&monster.getAID()==1)
         {
-            println("{Fall Witch} Woosh...yay... ",25,0,"FWitch 3");
+            println("{Autumn Witch} Woosh...yay... ",25,0,"FWitch 3");
             mattack();
             monster.setAID(2);
             return true;
@@ -1958,11 +1948,10 @@ public class CE
             if(RN.nextInt(100)+1>50)
             {
                 e.printAngryWitch();
-                println("{Fall Witch} BAM!!!",30);//MISSING AUDIO//
+                println("The witch silently waves her hand.",30);
                 int inflicted = monster.getDamage()*2-player.getDefense();
                 player.setHealth(player.getHealth()-inflicted);
                 println(monster.getName()+"'s spell inflicts "+inflicted+" damage.",25);
-                println("{Fall Witch} Are you dead yet?",25);//MISSING AUDIO//
                 monster.setAID(0);
             }
             else
@@ -1993,7 +1982,7 @@ public class CE
             else if(31<temp&&temp<40)
             {
                 e.printAngryWitch();
-                println("{Winter Witch} I bet you're not ready for this weather.",25); //MISSING AUDIO//
+                println("{Winter Witch} It must be pretty cold.",25,0,"WWitch 5");
                 cancelAttack(1);
                 cancelGuard(1);
                 println("You are frozen and can't move!",25);
@@ -2175,18 +2164,22 @@ public class CE
             if(temp==1)
             {
                 monster = new Monster(monster.getHealth(),300,10,4,0,7,"The Summer Witch",102);
+                println("{Summer Witch} Yay, it's my turn already!",25,0,"SuWitch 4");
             }
             else if(temp==2)
             {
                 monster = new Monster(monster.getHealth(),300,5,7,0,5,"The Autumn Witch",103);
+                println("{Autumn Witch} Ughhhh, not again...",25,0,"FWitch 2");
             }
             else if(temp==3)
             {
                 monster = new Monster(monster.getHealth(),300,5,4,0,10,"The Winter Witch",104);
+                println("{Winter Witch} Is it my turn already?",25,0,"WWitch 2");
             }
             else if(temp==4)
             {
                 monster = new Monster(monster.getHealth(),300,5,4,20,5,"The Spring Witch",105);
+                println("{Spring Witch} Its my time to shineee~",25,0,"SWitch 2.1"); //VARIED LINES//
             }
             println("The Witch transformed to "+monster.getName()+"!",20);
             monster.printStats();
