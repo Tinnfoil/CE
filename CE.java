@@ -1,6 +1,4 @@
 import java.util.*;
-import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -250,7 +248,7 @@ public class CE
                             cont=false;
                         }
                     }
-                    System.out.println("Priestess: Come back next time!");
+                    println("{Priestess} Come back next time!",30,0,"Priestess 6");
                 }
                 //Blacksmith
                 else if(a.equals("3")){
@@ -320,6 +318,7 @@ public class CE
                             if(!player.getWeaponRack().get(2).getOwned()){System.out.println("(2)Shield{Adds on sword}[100 Gold]");}
                             if(!player.getWeaponRack().get(3).getOwned()){System.out.println("(3)Magical Staff[100 Gold]");}
                             if(!player.getWeaponRack().get(4).getOwned()){System.out.println("(4)Cursed dagger[100 Gold]");}
+                            if(!player.getWeaponRack().get(5).getOwned()){System.out.println("(5)Charge Saber[100 Gold]");}
                             System.out.println("(0)Go back");
                             String c= input.next();
                             if(!c.equals("0")){
@@ -731,6 +730,7 @@ public class CE
             curseCheck();//Checks if the player is curse.
             defStanceCheck();//Sword's/Sword&Board ability. 
             hatchetPass();//The passive buff from the hatchet weapon.
+            DOTCheck();//In case player is taking any extra damage not from attacks.
             mDOTCheck();//In case monster takes any extra damage not from attacks. 
             boostingCheck();//In the casa boosting is active for a monster;
             attackDownCheck();
@@ -1940,7 +1940,7 @@ public class CE
         }
         if(monster.getId()==103&&monster.healthPercentage()<1&&monster.getAID()==0)
         {
-            println("My leaves fall, covering the final blossoms...",25);
+            println("{Fall Witch} Go away...",25,0,"FWitch 4");
             monster.setDefense(monster.getDefense()+2);
             mattack();
             monster.setAID(1);
@@ -1948,7 +1948,7 @@ public class CE
         }
         if(monster.getId()==103&&monster.getAID()==1)
         {
-            println("Listen to their anguish as loud as my own...",25);
+            println("{Fall Witch} Woosh...yay... ",25,0,"FWitch 3");
             mattack();
             monster.setAID(2);
             return true;
@@ -1958,11 +1958,11 @@ public class CE
             if(RN.nextInt(100)+1>50)
             {
                 e.printAngryWitch();
-                println("Wilt like they do for the greater evil!",25);
-                println("CORRUPT!!!",25);
+                println("{Fall Witch} BAM!!!",30);//MISSING AUDIO//
                 int inflicted = monster.getDamage()*2-player.getDefense();
                 player.setHealth(player.getHealth()-inflicted);
                 println(monster.getName()+"'s spell inflicts "+inflicted+" damage.",25);
+                println("{Fall Witch} Are you dead yet?",25);//MISSING AUDIO//
                 monster.setAID(0);
             }
             else
@@ -1977,7 +1977,7 @@ public class CE
             if(0<temp&&temp<10)
             {
                 e.printAngryWitch();
-                println("Ah yes, I hear the common cold has struck pandemic this season.",25);
+                println("{Winter Witch} Ohohohohohoho",25,0,"WWitch laugh 4");//VARIED LINE//
                 println("{Reduced attack for a turn}",20);
                 attackDown(1,3);
                 return true;
@@ -1985,7 +1985,7 @@ public class CE
             else if(11<temp&&temp<30)
             {
                 e.printAngryWitch();
-                println("Do be mindful of those spikes atop your head!!!",25);
+                println("{Winter Witch} Do be mindful of those spikes...",25,0,"WWitch 2");
                 int inflicted = (int)((double)monster.getDamage()*1.3)-player.getDefense();
                 println("The witch's icicles rain from above dealing "+inflicted+" damage!",25);
                 return true;
@@ -1993,7 +1993,7 @@ public class CE
             else if(31<temp&&temp<40)
             {
                 e.printAngryWitch();
-                println("It must be pretty cold to move a muscle, am I right?",25);
+                println("{Winter Witch} I bet you're not ready for this weather.",25); //MISSING AUDIO//
                 cancelAttack(1);
                 cancelGuard(1);
                 println("You are frozen and can't move!",25);
@@ -2002,8 +2002,8 @@ public class CE
         }
         if(monster.getId()==105&&monster.getAID()==1)
         {
-            println("Oh dear, this one is persistent on growing.",25);
-            println("The overgrown plants run rampant, preventing you from moving.",25);
+            println("{Spring Witch} What a pretty little flower!",25,0,"SWitch 5");
+            println("The overgrown plant runs rampant, preventing you from moving.",25);
             cancelAttack(1);
             monster.setAID(0);
             return true;
@@ -2013,14 +2013,14 @@ public class CE
             int temp = RN.nextInt(100)+1;
             if(0<temp&&temp<40)
             {
-                println("My, what a lovely day to blossom.",25);
+                println("{Spring Witch} What a lovely day this is!",25,0,"SWitch 3");
                 monster.setHealth(monster.getHeal()+10);
                 return true;
             }
             else if(40<temp&&temp<50)
             {
                 e.printAngryWitch();
-                println("It wouldn't hurt to grow a bit extra would it?",25);
+                println("{Spring Witch} Yesss, grow, Grow, GROW!!!",25,0,"SWitch 4.1"); //Varied Lines//
                 int heal=monster.getHeal()+3;
                 monster.setHealth(monster.getHealth()+heal);
                 println(monster.getName()+" heals for "+heal+" health!",20);
@@ -2914,7 +2914,7 @@ public class CE
         int i=0;
         monster= new Monster(999,999,0,0,0,0,"The Rock",0);
         boolean chosen=false;
-        while(i<=6){
+        while(i==6){
             if(i==0){
                 println("Pepo: Use that sword of yours and cut that rock like a samurai!",20,500);
                 println("Pepo: Using attack will deal a certain amount of damage. It can crit and is reduced by how much defense the enemy has.",20,500);
@@ -2928,8 +2928,8 @@ public class CE
             }
             if(i==3){
                 println("Pepo:Betta watch it though! Your health matters too!",20,500);
-                println("Pepo:Guess what happens when your health goes to zero...",20,700);
-                println("Pepo:You die",20,500);
+                println("Pepo:Guess what happens when your health goes to zero...",20,500);
+                println("Pepo:You die",10,500);
             }
             if(i==4){
                 println("Pepo:Using guard will increase your defense by 5 plus half of your level for three turns",20,500);
@@ -3100,7 +3100,8 @@ public class CE
     public static void println(String str, int delay, int pause, String name) throws Exception{
         try
         {
-            File file = new File("E:\\hddfbcf\\"+name+".wav");
+            File file = new File("C:\\Users\\yukioh99\\Desktop\\Project Sounds\\Downloads here\\Cut Files\\"+name+".wav");
+            //Kenny's Directory// File file = new File("
             AudioInputStream sound = AudioSystem.getAudioInputStream(file);
             clip = AudioSystem.getClip();
             clip.open(sound);
@@ -3123,6 +3124,7 @@ public class CE
             for(int i=0;i<str.length();i++){
                 System.out.print(str.charAt(i));
                 Thread.sleep(delay);
+
             }
             System.out.println();
             Thread.sleep(pause);
