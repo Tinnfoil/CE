@@ -77,10 +77,12 @@ public class CE
         game.e.printTitle();
         game.start();
         game.town();
+
     }
 
     public void start() throws Exception{
         Scanner input= new Scanner(System.in);
+        bgm();
         println("You see a faint light in the far distance.",10,500);
         println("Curious, you appoarch it and find a rock stuck between some boulders",10,500);
         println("Take it?",10,500);
@@ -318,7 +320,6 @@ public class CE
                             if(!player.getWeaponRack().get(2).getOwned()){System.out.println("(2)Shield{Adds on sword}[100 Gold]");}
                             if(!player.getWeaponRack().get(3).getOwned()){System.out.println("(3)Magical Staff[100 Gold]");}
                             if(!player.getWeaponRack().get(4).getOwned()){System.out.println("(4)Cursed dagger[100 Gold]");}
-                            if(!player.getWeaponRack().get(5).getOwned()){System.out.println("(5)Charge Saber[100 Gold]");}
                             System.out.println("(0)Go back");
                             String c= input.next();
                             if(!c.equals("0")){
@@ -1808,7 +1809,9 @@ public class CE
             {
                 e.printAngryGolem();
                 println("A fiery beam fires from within the being.",35);
-                player.setHealth(player.getHealth()+player.getDefense()-monster.getDamage());
+                int inflicted = player.getDefense()-monster.getDamage();
+                player.setHealth(player.getHealth()-inflicted);
+                System.out.println(monster.getName()+"'s laser does "+inflicted+" damage.");
             }
         }
 
@@ -2240,7 +2243,7 @@ public class CE
             wildSlash();
             return true;
         }
-        else if(b.equals("2")&&player.hatchet()&&warCryCount<4&&useMana(40))
+        else if(b.equals("2")&&player.hatchet()&&warCryCount<3&&useMana(40))
         {
             warCry();
             return true;
@@ -2830,7 +2833,7 @@ public class CE
         }
         if(c.equals("3")){
             System.out.println("Gaia'a Chestpiece:");
-            System.out.println("Attacks deal bonus damage equal to half the player's heal");
+            System.out.println("Attacks deal bonus damage equal the player's heal");
             player.printArmorStats("chestpiece");
             if(!player.getArmory().get(2).getOwned()){
                 System.out.println("(1)Buy");
@@ -3142,4 +3145,22 @@ public class CE
         tenthCheck=false;
     }
 
+    public static void bgm() throws Exception
+    {
+        try
+        {
+            //File file = new File("C:\\Users\\yukioh99\\Desktop\\Project Sounds\\Test Sounds\\Re-Zero.wav");
+            File file = new File("C:\\Users\\yukioh99\\Desktop\\02_-_Blue_Water.wav");
+            //Kenny's Directory// 
+            AudioInputStream sound = AudioSystem.getAudioInputStream(file);
+            clip = AudioSystem.getClip();
+            clip.open(sound);
+            clip.setFramePosition(0);  // Must always rewind!
+            int temp = Integer.MAX_VALUE;
+            clip.loop(temp);
+            System.out.println("bloop");
+        }
+        catch(Exception e){
+        }
+    }
 }
