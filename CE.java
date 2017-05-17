@@ -55,7 +55,7 @@ public class CE extends JPanel
     public static Player saveFile;
 
     public static Clip clip;
-   
+
     public static String mname, background;
     public JFrame frame = new JFrame();
     public BufferedImage image;
@@ -662,10 +662,10 @@ public class CE extends JPanel
                 if(a.equals("4")){
                     player.printStats();// Prints the player's stats
                     if(player.hatchet()){
-                        System.out.print("Base Damage:"+multiplier+" ");
+                        System.out.println("Base Damage:"+multiplier+" ");
                     }
                     else if(player.cowl()){
-                        System.out.print("Enemy's Defense:"+monster.getDefense()+" ");
+                        System.out.println("Enemy's Defense:"+monster.getDefense()+" ");
                     }
                     else{
                         System.out.println();
@@ -1203,32 +1203,32 @@ public class CE extends JPanel
     public void goonCheck() throws Exception{
         if(bossTimer&&monster.getHealth()<=0&&monster.getId()==9001){
             boss.setDefense(boss.getDefense()-1);
-            println("You defeated "+monster.getName()+" before "+bossName+" was able to recover!{-1 defense}",25);
-            println(""+bossName+": Incompetent underling...",20);
             reset();draw("King");
             monster= new Monster(100,100,0,0,0,0,"",0);
             monster = boss;
+            println("You defeated "+monster.getName()+" before "+bossName+" was able to recover!{-1 defense}",25);
+            println(""+bossName+": Incompetent underling...",20);
             monster.printStats();
             monster.setAID(0);
             bossTimer=false;
         }
         if(bossTimer&&monster.getHealth()<=0&&monster.getId()==9002){
             boss.setDamage(boss.getDamage()-1);
-            println("You defeated "+monster.getName()+" before "+bossName+" was able to recover!{-1 attack}",25);
-            println(monster.getName()+": What a useless bonobo...",20);
             reset();draw("King");
             monster= new Monster(100,100,0,0,0,0,"",0);
             monster = boss;
+            println("You defeated "+monster.getName()+" before "+bossName+" was able to recover!{-1 attack}",25);
+            println(monster.getName()+": What a useless bonobo...",20);
             monster.printStats();
             monster.setAID(0);
             bossTimer=false;
         }
         if(!bossTimer&&(monster.getId()==9001||monster.getId()==9002)){
-            println(""+bossName+" was able to recover while you were distracted! {Healed 30 health}",25);
-            println(""+bossName+": Well done, go and rest my underling.",20);
             reset();draw("King");
             monster = new Monster(100,100,0,0,0,0,"",0);
             monster = boss;
+            println(""+bossName+" was able to recover while you were distracted! {Healed 30 health}",25);
+            println(""+bossName+": Well done, go and rest my underling.",20);
             monster.printStats();
             monster.setAID(0);
             monster.setHealth(monster.getHealth()+30);
@@ -1397,6 +1397,7 @@ public class CE extends JPanel
     public void manaSurge() throws Exception
     {
         if(overflow){
+            draw("Explosion");
             print("EXPL",50);print("OOOOO",30);println("SION!!!",10);
             int damage= player.getMana();
             player.setMana(startingMana);
@@ -2176,14 +2177,14 @@ public class CE extends JPanel
                 println(monster.getName()+": Come her soldier! Assist me!",30);
                 boss = monster;
                 monster = new Monster(100,100,7,2,0,0,"The Iron Vanguard",9001);
-                reset();draw("Iron");
+                reset();draw("Iron");mname="Iron";
                 monster.printStats();
             }
             else{
                 println(monster.getName()+": Henchman! Take care of this nusiance",30);
                 boss = monster;
                 monster = new Monster(100,100,10,0,0,0,"The Lowly Goon",9002);
-                reset();draw("Goon");
+                reset();draw("Goon");mname="Goon";
                 monster.printStats();
             }
             timer(6);
@@ -2248,25 +2249,25 @@ public class CE extends JPanel
             if(temp==1)
             {
                 monster = new Monster(monster.getHealth(),300,10,4,0,7,"The Summer Witch",102);
-                reset();draw("SummerWitch");
+                reset();draw("SummerWitch");mname="SummerWitch";
                 println("{Summer Witch} Yay, it's my turn already!",25,0,"SuWitch 4");
             }
             else if(temp==2)
             {
                 monster = new Monster(monster.getHealth(),300,5,7,0,5,"The Autumn Witch",103);
-                reset();draw("FallWitch");
+                reset();draw("FallWitch");mname="FallWitch";
                 println("{Autumn Witch} Ughhhh, not again...",25,0,"FWitch 2");
             }
             else if(temp==3)
             {
                 monster = new Monster(monster.getHealth(),300,5,4,0,10,"The Winter Witch",104);
-                reset();draw("WinterWitch");
+                reset();draw("WinterWitch");mname="WinterWitch";
                 println("{Winter Witch} Is it my turn already?",25,0,"WWitch 2");
             }
             else if(temp==4)
             {
                 monster = new Monster(monster.getHealth(),300,5,4,20,5,"The Spring Witch",105);
-                reset();draw("SpringWitch");
+                reset();draw("SpringWitch");mname="SpringWitch";
                 println("{Spring Witch} Its my time to shineee~",25,0,"SWitch 2.1"); //VARIED LINES//
             }
             println("The Witch transformed to "+monster.getName()+"!",20);
