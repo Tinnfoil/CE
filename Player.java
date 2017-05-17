@@ -332,7 +332,7 @@ public class Player extends Organism
     }
 
     public void printStats(){
-        System.out.println("Damage:"+getDamage()+" Defense:"+getDefense()+" Heal:"+getHeal()+" Crit:"+getCrit()+"");
+        System.out.print("Damage:"+getDamage()+" Defense:"+getDefense()+" Heal:"+getHeal()+" Crit:"+getCrit()+"");
     }
 
     public void printWeaponStats(String name){
