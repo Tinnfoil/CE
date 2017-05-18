@@ -6,13 +6,6 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.*;
-import java.awt.event.*;
-import java.awt.*;
-import javax.swing.*;
-import java.awt.event.*;
-import javax.imageio.ImageIO;
-import java.io.File;
-import java.awt.image.BufferedImage;
 /**
  * A short game with the simple goal of beating the final boss in under 10 days.
  * This is a open source code and things are open to be changed
@@ -21,7 +14,7 @@ import java.awt.image.BufferedImage;
  * @version (CE 2.5.1) Update
  * Burned Mechanic added for both monster/player(Cannot recover health);
  */
-public class CE extends JPanel
+public class CE
 {
     //+
     //These ints are gobal variables that can be used or changed at anytime.
@@ -56,10 +49,6 @@ public class CE extends JPanel
 
     public static Clip clip;
 
-    public static String mname, background;
-    public JFrame frame = new JFrame();
-    public BufferedImage image;
-    public static String name;
     //Boss
     public static boolean mDefStance, bossTimer;
     public static int timer;
@@ -83,36 +72,12 @@ public class CE extends JPanel
         playerLost=false;
         bossName="King";
         CE game= new CE();
-        game.frame.setSize(817,540);
-        game.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        game.frame.getContentPane().setBackground(new Color(0,153,0));
-        game.frame.setVisible(true);
-        game.frame.add(game);
         game.player.setMaxHealth(game.player.getMaxHealth()+50);
         game.player.setHealth(game.player.getMaxHealth());
         game.e.printTitle();
-        //game.start();
+        game.start();
         game.town();
-    }
 
-    public void paintComponent(Graphics g){
-        Graphics2D g2 = (Graphics2D)g;
-        try{
-            image= ImageIO.read(new File("Images\\"+name+".png"));
-        }
-        catch(Exception e){}
-        g2.drawImage(image,0,0,null);
-    }
-
-    public void draw(String name) throws Exception{
-        this.name=name;
-        Thread.sleep(30);
-        paintImmediately(0,0,800,500);
-    }
-
-    public void reset() throws Exception{
-        draw(background);
-        draw("Base");
     }
 
     public void start() throws Exception{
@@ -145,7 +110,6 @@ public class CE extends JPanel
         String a="1";
         String b="1";
         while(playerLost==false){
-            draw("Town");
             day++; //every call for this method will increase the day.
             System.out.println("{Day "+day+"}");
             System.out.println("Press 1 to continue");
@@ -322,7 +286,7 @@ public class CE extends JPanel
                             System.out.println("(1)Living Armor{+1 Health per turn during combat}[75 Gold]");
                             System.out.println("(2)Mana Ring{+1 Mana Regeneration per turn}[50 gold]");
                             System.out.println("(3)Reina's Pendent{+15 starting mana}[50 Gold]|Max:4|");
-                            System.out.println("(4)Thirst of Ando{+2 damage -1 defense}[50 gold]");
+                            System.out.println("(4)Thirst of Ando{+2 damage -2 defense}[50 gold]");
                             System.out.println("(0)Go Back");
                             String c= input.next();
                             if(c.equals("1")&&canBuy(75)){
@@ -338,7 +302,7 @@ public class CE extends JPanel
                                 startingMana+=15;
                             }
                             if(c.equals("4")&&canBuy(50)){
-                                println("Gain +2 damage and lost -1 defense",20);
+                                println("Gain +2 damage and lost -2 defense",20);
                                 player.setNormDamage(player.getNormDamage()+2);
                                 player.setNormDefense(player.getNormDefense()-2);
                                 player.updateStats();
@@ -373,12 +337,12 @@ public class CE extends JPanel
                 }
                 else if(a.equals("5")){
                     if(dungeon==1){System.out.println("(1)Rocky Highlands 1");}
-                    if(dungeon==2){System.out.println("(2)The Ruins 2");}
+                    if(dungeon==2){System.out.println("(2)Ghastly Ruins 2");}
                     if(dungeon==3){System.out.println("(3)Devil's Lair 3");}
                     if(dungeon==4){System.out.println("(4)The Throne 4");}
                     b= input.next();
                     if(b.equals("1")&&dungeon==1){
-                        background="Background2";reset();
+                        playEffect("Walk");
                         if(!dungeon(1,4)){
                             playerLost=true;break; 
                         }
@@ -387,7 +351,7 @@ public class CE extends JPanel
                         }
                     }
                     else if(b.equals("2")&&dungeon==2){
-                        background="Background3";reset();
+                        playEffect("Walk");
                         if(!dungeon(2,5)){
                             playerLost=true;break;   
                         }
@@ -396,7 +360,7 @@ public class CE extends JPanel
                         }
                     }
                     else if(b.equals("3")&&dungeon==3){
-                        background="Background4";reset();
+                        playEffect("Walk");
                         if(!dungeon(3,5)){
                             playerLost=true;break;
                         }
@@ -405,7 +369,7 @@ public class CE extends JPanel
                         }
                     }
                     else if(b.equals("4")&&dungeon==4){
-                        background="Background5";draw("");
+                        playEffect("Walk");
                         if(!dungeon(4,6)){
                             playerLost=true;break;    
                         }
@@ -493,7 +457,6 @@ public class CE extends JPanel
                 dung[pos-1]=69;
             }
             if(current==777){
-                draw("Dungeon");
                 println("You find a shop in the dungeon",20);
                 e.printShop();
                 boolean shopping=true;
@@ -609,8 +572,6 @@ public class CE extends JPanel
         //--------MONSTER CREATION PHASE---------//
         initializeMonster(id);
         monster.printStats();
-        mname=getMonsterName();
-        String wname=getWeaponName();
         //----------------------------------------//
 
         //--------------FIGHT PHASE--------------//
@@ -631,10 +592,6 @@ public class CE extends JPanel
         player.setMana(startingMana);// can change for items that give extra starting mana
         while(infight==true){
             String a="1";
-            reset();
-            draw("Base");
-            draw(mname);
-            draw(wname);
             //-----------DEBUG STATEMENTS-----------//
 
             //---------------------------------------//
@@ -662,14 +619,13 @@ public class CE extends JPanel
                 if(a.equals("4")){
                     player.printStats();// Prints the player's stats
                     if(player.hatchet()){
-                        System.out.println("Base Damage:"+multiplier+" ");
+                        System.out.print("Base Damage:"+multiplier+" ");
                     }
-                    else if(player.cowl()){
-                        System.out.println("Enemy's Defense:"+monster.getDefense()+" ");
+                    if(player.cowl()){
+                        System.out.print("Enemy's Defense:"+monster.getDefense()+" ");
                     }
-                    else{
-                        System.out.println();
-                    }
+                    System.out.println("");
+
                     printAbilities();//<--Since there is alot of abilities. Its better to be in a seperate method.
                     System.out.print("Action:");
                     String b=input.next();
@@ -770,6 +726,9 @@ public class CE extends JPanel
             if(player.staff()){
                 overFlowCheck();
             }
+            if(player.dagger()){
+                daggerCheck();
+            }
 
             guardCheck();//Checks whether the player/monster is guarding. Prevents extra guarding
             confuseCheck();//Checks if the player is confused or not.
@@ -843,7 +802,6 @@ public class CE extends JPanel
             if(player.getHealth()<=0){
                 player.setHealth(1);
             }
-            draw("Win");
             println("You are victorious.",50);
             int goldfound=0;
             if(player.tunic()){
@@ -876,7 +834,6 @@ public class CE extends JPanel
             playerLost=true;
         }
         else{
-            draw("Lose");
             print("You have died to "+monster.getName()+"", 50);
             println("...", 150);
             println("Game Over",50);
@@ -1203,32 +1160,29 @@ public class CE extends JPanel
     public void goonCheck() throws Exception{
         if(bossTimer&&monster.getHealth()<=0&&monster.getId()==9001){
             boss.setDefense(boss.getDefense()-1);
-            reset();draw("King");
-            monster= new Monster(100,100,0,0,0,0,"",0);
-            monster = boss;
             println("You defeated "+monster.getName()+" before "+bossName+" was able to recover!{-1 defense}",25);
             println(""+bossName+": Incompetent underling...",20);
+            monster= new Monster(100,100,0,0,0,0,"",0);
+            monster = boss;
             monster.printStats();
             monster.setAID(0);
             bossTimer=false;
         }
         if(bossTimer&&monster.getHealth()<=0&&monster.getId()==9002){
             boss.setDamage(boss.getDamage()-1);
-            reset();draw("King");
-            monster= new Monster(100,100,0,0,0,0,"",0);
-            monster = boss;
             println("You defeated "+monster.getName()+" before "+bossName+" was able to recover!{-1 attack}",25);
             println(monster.getName()+": What a useless bonobo...",20);
+            monster= new Monster(100,100,0,0,0,0,"",0);
+            monster = boss;
             monster.printStats();
             monster.setAID(0);
             bossTimer=false;
         }
         if(!bossTimer&&(monster.getId()==9001||monster.getId()==9002)){
-            reset();draw("King");
-            monster = new Monster(100,100,0,0,0,0,"",0);
-            monster = boss;
             println(""+bossName+" was able to recover while you were distracted! {Healed 30 health}",25);
             println(""+bossName+": Well done, go and rest my underling.",20);
+            monster = new Monster(100,100,0,0,0,0,"",0);
+            monster = boss;
             monster.printStats();
             monster.setAID(0);
             monster.setHealth(monster.getHealth()+30);
@@ -1397,7 +1351,6 @@ public class CE extends JPanel
     public void manaSurge() throws Exception
     {
         if(overflow){
-            draw("Explosion");
             print("EXPL",50);print("OOOOO",30);println("SION!!!",10);
             int damage= player.getMana();
             player.setMana(startingMana);
@@ -1432,6 +1385,11 @@ public class CE extends JPanel
             player.setMana(player.getMana()-60);
         }
         splitTimer=3;
+    }
+
+    public void daggerCheck() throws Exception{
+        player.setMana(player.getMana()-2);
+        player.setHealth(player.getHealth()-2-(wrathStacks/2));
     }
 
     public void fPact() throws Exception{
@@ -1635,18 +1593,17 @@ public class CE extends JPanel
         player.heal();
         if(!cursed){// Yes, even curse will prevent this.
             int regen= player.getManaRegen();
-            player.setMana(player.getMana()+regen);
-            println(" and regenerated "+regen+" mana",20);
         }
-        else{
-            System.out.println();
-        }
+        System.out.println();
     }
 
     public void initializeMonster(int id) throws Exception{
+        Random RN = new Random();
+        int line = RN.nextInt();
         if(id==1){
             monster= new Monster(140,140,6,2,0,0,"The Slime",1);
             System.out.println("You find a "+monster.getName().substring(3)+"");
+            playEffect("Gloop");
             e.printSlime();//Animation
         }
         else if(id==2){
@@ -1667,6 +1624,8 @@ public class CE extends JPanel
         else if(id==11){
             monster= new Monster(200,200,4,2,20,1,"The Ghoul",11);
             System.out.println("You find a lone "+monster.getName().substring(3)+"");
+            if(line%2==1){println("{Ghoul} Imma spook yo ass!",25,0,"Ghoul 1.1");}
+            else{println("{Ghoul} Imma spook yo ass...hehehe",25,0,"Ghoul 1.2");}
             e.printGhoul();
         }
         else if(id==12)
@@ -1703,6 +1662,7 @@ public class CE extends JPanel
             else if(temp==2) 
             {
                 monster = new Monster(300,300,5,7,0,5,"The Autumn Witch",103);
+                println("{Autumn Witch} Let's get this over with..",25,0,"FWitch 1");
             }
             else if(temp==3)
             {
@@ -1712,7 +1672,6 @@ public class CE extends JPanel
             {
                 monster = new Monster(300,300,5,4,20,5,"The Spring Witch",105);
             }
-            println("You stumble upon a wandering "+monster.getName().substring(3)+" nearby.",20);
             e.printWitch();
         }
         else if(id==1001)
@@ -1741,13 +1700,14 @@ public class CE extends JPanel
         Random RN= new Random();
         //-----------MONSTER SPECIALS----------//
         if(id==1&&monster.getAID()==0&&monster.getHealth()<=70&&RN.nextInt(100)<=10){//Slime
-            draw("Angry");
+            playEffect("Gloop");
             println(monster.getName()+" confuses you!",40);
             confuse(3);
             monster.setAID(monster.getAID()+1);
             return true;
         }
         if(id==1&&monster.getAID()==1&&RN.nextInt(100)<=20){//Slime
+            playEffect("Gloop");
             println(monster.getName()+" jumps on you and drains your mana!",30);
             useMana(20);
             monster.setAID(monster.getAID()+1);
@@ -1755,6 +1715,7 @@ public class CE extends JPanel
             return true;
         }
         if(id==1&&monster.getAID()==2&&RN.nextInt(100)<=20){//Slime
+            playEffect("Gloop");
             println(monster.getName()+" jumps on you and curses you {No mana regen}!",30);
             curse(2);
             monster.setAID(0);
@@ -1763,7 +1724,6 @@ public class CE extends JPanel
         }
 
         if(id==2&&monster.getAID()==0&&(double)monster.getHealth()/monster.getMaxHealth()<=.7&&RN.nextInt(100)<=20){//Goblin
-            draw("Angry");
             e.printMadGoblin();
             println(monster.getName()+" stabs you! {You are bleeding}",30);
             mDOT(monster.getDamage()/2,3);
@@ -1771,7 +1731,6 @@ public class CE extends JPanel
             return true;
         }
         if(id==2&&monster.getAID()==1&&RN.nextInt(100)<=10){//Goblin
-            draw("Angry");
             e.printAngryGoblin();
             println(monster.getName()+" enrages {+4 damage}!",30);
             monster.setDamage(monster.getDamage()+4);
@@ -1779,14 +1738,13 @@ public class CE extends JPanel
             return true;
         }
 
-        if(id==3&&monster.getAID()==0&&monster.healthPercentage()<=.9){//Skeleton          
+        if(id==3&&monster.getAID()==0&&monster.healthPercentage()<=.9){//Skeleton
             println(monster.getName()+" throws one of his broken bones at you! {You are bleeding}",20);
             DOT(monster.getDamage()/2,3);
             monster.setAID(1);
             return true;
         }
         if(id==3&&monster.getAID()==1&&RN.nextInt(100)<20){//Skeleton
-            draw("Base");draw("Angry");draw("SkeletonThrow");
             e.printAngrySkeleton();
             println(monster.getName()+" does a reckless swing!",25);
             int damage=(int)(monster.getDamage()*(1+monster.missingHealthPercentage()));
@@ -1797,7 +1755,6 @@ public class CE extends JPanel
         }
 
         if(id==4&&monster.getAID()==0&&RN.nextInt(100)<=20){//Wolf
-            draw("Angry");
             e.printAngryWolf();
             println(monster.getName()+" bites off some of your armor!{-1 defense}",20);
             int damage=(int)(monster.getDamage()*1.5);
@@ -1815,8 +1772,8 @@ public class CE extends JPanel
         }
 
         if(id==11&&monster.getAID()==0&&(double)monster.getHealth()/monster.getMaxHealth()<=.9&&RN.nextInt(100)<=20){//Ghoul
-            draw("Angry");
             e.printAngryGhoul();
+            println("{Ghoul} Mmmmm, let me suck you up.",25,0,"Ghoul 2");
             int damage=(int)((double)monster.missingHealth()*.2);
             println(monster.getName()+" bites you and steals "+damage+" health!",30);
             monster.setHealth(monster.getHealth()+damage);
@@ -1825,9 +1782,8 @@ public class CE extends JPanel
             return true;
         }
         if(id==11&&monster.getAID()==1&&RN.nextInt(100)<=10){//Ghoul
-            draw("Angry");
             e.printAngryGhoul();
-            println(monster.getName()+" sratches you and you got cursed!",30);
+            println(monster.getName()+" sratches you and you got cursed!",30,0,"Ghoul 4");
             mattack();
             curse(2);
             monster.setAID(0);
@@ -1842,7 +1798,6 @@ public class CE extends JPanel
 
         if(id==12&&monster.healthPercentage()<0.75&&monster.getAID()==0)//Golem
         {
-            draw("Angry");
             println("Those rocks that you've been knocking off the being seem to allow it to move more easily.",35);
             monster.setDamage(monster.getDamage()+5);
             monster.setDefense(monster.getDefense()/2);
@@ -1852,7 +1807,6 @@ public class CE extends JPanel
         }
         if(id==12&&monster.healthPercentage()<0.5&&monster.getAID()==1)//Golem
         {
-            draw("Angry");
             e.printAngryGolem();
             println("All the rocks have fallen off its body, now its time for the real fight!",35);
             monster.setDamage(monster.getDamage()+5);
@@ -1866,7 +1820,6 @@ public class CE extends JPanel
             Random gen = new Random();
             if(gen.nextInt(10)+1<=3)
             {
-                reset();draw("GolemBeam");
                 e.printAngryGolem();
                 println("A fiery beam fires from within the being.",35);
                 int inflicted = player.getDefense()-monster.getDamage();
@@ -1876,7 +1829,6 @@ public class CE extends JPanel
         }
 
         if(id==13&&monster.getAID()==0&&monster.healthPercentage()<=.9&&RN.nextInt(100)<=20){//Orc
-            draw("Angry");
             e.printAngryOrc();
             println(monster.getName()+" bashes you with his club and does "+monster.getDamage()+" damage!",20);
             player.setHealth(player.getHealth()-monster.getDamage());
@@ -1890,7 +1842,6 @@ public class CE extends JPanel
             return true;
         }
         if(id==13&&monster.getAID()==2){//Orc
-            draw("Angry");
             e.printAngryOrc();
             println(monster.getName()+" does a heavy swing {Bleeding}!",25);
             int damage= monster.getDamage()*2;
@@ -1911,7 +1862,6 @@ public class CE extends JPanel
         {
             if(RN.nextInt(100)+1<=25)
             {
-                draw("CrabShell");
                 e.printShellCrab();
                 println(monster.getName()+" retracts into its shell.",20);
                 monster.setDefense(monster.getDefense()+10);
@@ -1923,15 +1873,16 @@ public class CE extends JPanel
         {
             if(RN.nextInt(100)+1>60)
             {
-                draw("Angry");
                 e.printAngryCrab();
-                println(monster.getName()+" pops out from its shell, it seems to be angry...",20);
+                if(RN.nextInt(100)%2==1){println(monster.getName()+" pops out from its shell, it seems to be angry...",20,0,"Pinch");}
+                else{println(monster.getName()+" pops out from its shell, it seems to be angry...",20,0,"Crab 1");}
                 monster.setDefense(monster.getDefense()-10);
                 monster.setDamage(monster.getDamage()+1);
             }
             else
             {
-                println(monster.getName()+" comes out of its shell.",20);
+                if(RN.nextInt(100)%2==1){println(monster.getName()+" comes out of its shell.",20,0,"Pinch");}
+                else{println(monster.getName()+" comes out of its shell.",20,0,"Crab 1");}
                 monster.setDefense(monster.getDefense()-10);
             }
             monster.setAID(monster.getAID()+1);
@@ -1939,14 +1890,12 @@ public class CE extends JPanel
         }
 
         if(id==101&&monster.getAID()==0&&(turnTimer>=5||monster.healthPercentage()<=.8)&&(!attackCancelled&&!guardCancelled&&!restCancelled)){//Knight
-            draw("Angry");
             println(monster.getName()+" curses you!",20);
             curse(3);
             monster.setAID(RN.nextInt(3)+2);
             return true;
         }
         if(id==101&&monster.getAID()==1&&monster.healthPercentage()<=.8&&(!attackCancelled&&!guardCancelled&&!restCancelled)){//Knight
-            draw("Angry");
             e.printAngryKnight();
             println(monster.getName()+" knocks you back and confuses you!",20);
             confuse(3);
@@ -1960,7 +1909,6 @@ public class CE extends JPanel
             return true;
         }
         if(id==101&&monster.getAID()==3&&!confused&&RN.nextInt(100)<90){//Knight
-            draw("Angry");
             e.printAngryKnight();
             println(monster.getName()+" smashes your arm! Preventing your guard",30);
             cancelGuard(2);
@@ -1968,7 +1916,6 @@ public class CE extends JPanel
             return true;
         }
         if(id==101&&monster.getAID()==4&&!confused&&RN.nextInt(100)<90){//Knight
-            draw("Fireball");
             println(monster.getName()+" burns you {Unable to heal}!",30);
             cancelRest(2);
             player.burn(2);
@@ -1987,7 +1934,6 @@ public class CE extends JPanel
             Random gen = new Random();
             if(gen.nextInt(10)<=2)
             {
-                draw("Fireball");
                 println("{Summer Witch} Wanna to be well done?",25,0,"SuWitch 3");
                 player.burn(2);
                 println("You are burned from the witch's attack! {burned}",25);
@@ -2002,7 +1948,6 @@ public class CE extends JPanel
         }
         if(monster.getId()==103&&monster.healthPercentage()<1&&monster.getAID()==0)
         {
-            draw("Angry");
             println("{Autumn Witch} Go away...",25,0,"FWitch 4");
             monster.setDefense(monster.getDefense()+2);
             mattack();
@@ -2020,7 +1965,6 @@ public class CE extends JPanel
         {
             if(RN.nextInt(100)+1>50)
             {
-                draw("Angry");
                 e.printAngryWitch();
                 println("The witch silently waves her hand.",30);
                 int inflicted = monster.getDamage()*2-player.getDefense();
@@ -2133,12 +2077,10 @@ public class CE extends JPanel
         }
         if(monster.getId()==9999&&monster.getAID()==2){//boss
             if(RN.nextInt(2)==0){
-                draw("Angry");
                 println(monster.getName()+" slashes you across the chest!{Bleeding}",30);
                 DOT(2,monster.getDamage());
             }
             else{
-                draw("Angry");
                 println(monster.getName()+" bashes you with the hilt and deals "+monster.getDamage()+" damage!{Confused}",30);
                 player.setHealth(player.getHealth()-monster.getDamage());
                 confuse(2);
@@ -2147,7 +2089,6 @@ public class CE extends JPanel
             return true;
         }
         if(monster.getId()==9999&&monster.getAID()==3){//boss
-            draw("Angry");
             println("and deflected "+monster.getName()+"'s attack and lowered his defense!{-1 defense} ",20);// the and is suppose to act as if your guard did that :3
             monster.setDefense(monster.getDefense()-1);
             monster.setAID(4);
@@ -2162,12 +2103,10 @@ public class CE extends JPanel
         if(monster.getId()==9999&&monster.getAID()==5&&RN.nextInt(100)<=40){//boss
             mDefStance=false;
             if(RN.nextInt(2)==0){
-                draw("Angry");
                 println(monster.getName()+" curses you with his sword!{Cursed}",30);
                 curse(3);
             }
             else{
-                draw("Fireball");
                 int damage=(int)((double)monster.getDamage()*1.5);
                 player.setHealth(player.getHealth()-damage);
                 println(monster.getName()+" throws a fireball at you and deals "+damage+" damage!{Unable to heal}",30);
@@ -2177,21 +2116,18 @@ public class CE extends JPanel
                 println(monster.getName()+": Come her soldier! Assist me!",30);
                 boss = monster;
                 monster = new Monster(100,100,7,2,0,0,"The Iron Vanguard",9001);
-                reset();draw("Iron");mname="Iron";
                 monster.printStats();
             }
             else{
                 println(monster.getName()+": Henchman! Take care of this nusiance",30);
                 boss = monster;
                 monster = new Monster(100,100,10,0,0,0,"The Lowly Goon",9002);
-                reset();draw("Goon");mname="Goon";
                 monster.printStats();
             }
             timer(6);
             return true;
         }
         if(monster.getId()==9001&&monster.getAID()==0&&RN.nextInt(100)<=20){// Goon 1 Vanguard
-            draw("Angry");
             println(monster.getName()+" bashes you with his shield!{Confused}",30);
             if(player.swordandboard()){println(monster.getName()+": How do you like your own medicine?",20);}
             confuse(2);
@@ -2199,7 +2135,6 @@ public class CE extends JPanel
             return true;
         }
         if(monster.getId()==9001&&monster.getAID()==1&&RN.nextInt(100)<=20){// Goon 1 Vanguard
-            draw("Angry");
             println(monster.getName()+" thrusts you and deals "+monster.getDamage()+"",30);
             player.setHealth(player.getHealth()-monster.getDamage());
             monster.setAID(monster.getAID()+1);
@@ -2212,7 +2147,6 @@ public class CE extends JPanel
             return true;
         }
         if(monster.getId()==9002&&monster.getAID()==0&&RN.nextInt(100)<=20){// Goon 2 Goon
-            draw("Angry");
             int damage= (int)(monster.getDamage()*1.2);
             println(monster.getName()+"does a reckless attack and deals "+damage+" damage!{-1 defense}",30);
             player.setHealth(player.getHealth()-damage);
@@ -2220,7 +2154,6 @@ public class CE extends JPanel
             return true;
         }
         if(monster.getId()==9002&&monster.getAID()==1&&RN.nextInt(100)<=20){// Goon 2 Goon
-            draw("Angry");
             println(monster.getName()+" gets angry {+1 attack}",30);
             monster.setDamage(monster.getDamage()+1);
             monster.setAID(monster.getAID()+1);
@@ -2249,25 +2182,21 @@ public class CE extends JPanel
             if(temp==1)
             {
                 monster = new Monster(monster.getHealth(),300,10,4,0,7,"The Summer Witch",102);
-                reset();draw("SummerWitch");mname="SummerWitch";
                 println("{Summer Witch} Yay, it's my turn already!",25,0,"SuWitch 4");
             }
             else if(temp==2)
             {
                 monster = new Monster(monster.getHealth(),300,5,7,0,5,"The Autumn Witch",103);
-                reset();draw("FallWitch");mname="FallWitch";
                 println("{Autumn Witch} Ughhhh, not again...",25,0,"FWitch 2");
             }
             else if(temp==3)
             {
                 monster = new Monster(monster.getHealth(),300,5,4,0,10,"The Winter Witch",104);
-                reset();draw("WinterWitch");mname="WinterWitch";
                 println("{Winter Witch} Is it my turn already?",25,0,"WWitch 2");
             }
             else if(temp==4)
             {
                 monster = new Monster(monster.getHealth(),300,5,4,20,5,"The Spring Witch",105);
-                reset();draw("SpringWitch");mname="SpringWitch";
                 println("{Spring Witch} Its my time to shineee~",25,0,"SWitch 2.1"); //VARIED LINES//
             }
             println("The Witch transformed to "+monster.getName()+"!",20);
@@ -2326,8 +2255,6 @@ public class CE extends JPanel
 
     public boolean useAbility(String b) throws Exception{
         if(b.equals("1")&&player.hatchet()&&useMana(40)){
-            Thread.sleep(500);
-            draw("Slash");
             wildSlash();
             return true;
         }
@@ -2347,8 +2274,6 @@ public class CE extends JPanel
         }
         else if(b.equals("2")&&player.swordandboard()&&useMana(20))
         {
-            Thread.sleep(500);
-            draw("ShieldBash");
             shieldBash();
             return true;
         }
@@ -2356,7 +2281,6 @@ public class CE extends JPanel
         {
             manaSurge();
             if(overflow){
-                draw("Explosion");
                 return true;
             }
             else{
@@ -2375,28 +2299,27 @@ public class CE extends JPanel
         }
         else if(b.equals("2")&&player.dagger()&&useMana(30))
         {
-            draw("Wrath");
             wrath();
             return true;
         }
         else if(b.equals(healthNum)&&healthPot>0){
             healthPot--;
             int heal=player.getHeal()+20;
-            println("You heal for "+heal+" health!",35);
+            println("You heal for "+heal+" health!",35,0,"Potion");
             player.setHealth(player.getHealth()+heal);
             return false;
         }
         else if(b.equals(manaNum)&&manaPot>0){
             manaPot--;
             int regen=(int)(((double)player.getMaxMana()-(double)player.getMana())*0.3);
-            println("You regenerate "+regen+" mana!",35);
+            println("You regenerate "+regen+" mana!",35,0,"Potion");
             player.setMana(player.getMana()+regen);
             return false;
         }
         else if(b.equals(statusNum)&&statusPot>0){
             statusPot--;
             removeEffects();
-            println("You remove your debuff",35);
+            println("You remove your debuff",35,0,"Potion");
             return false;
         }
         else if(b.equals(fireNum)&&firePot>0){
@@ -2405,6 +2328,7 @@ public class CE extends JPanel
         }
         else if(b.equals(goodNum)&&goodPot>0){
             player.immune(2);
+            playEffect("Potion");
             return false;
         }
         if(b.equals(manaNum))
@@ -2638,7 +2562,7 @@ public class CE extends JPanel
             int sp= (player.getLevel()-lvl);
             player.setSP(player.getSP()+sp);
             player.setMaxHealth(player.getMaxHealth()+(5*sp));
-            println("You have leveled up! You are now level "+player.getLevel()+" and have "+player.getSP()+" Skill Points",30);
+            println("You have leveled up! You are now level "+player.getLevel()+" and have "+player.getSP()+" Skill Points",30,0,"Level Up");
         }
     }
 
@@ -2736,7 +2660,7 @@ public class CE extends JPanel
                 System.out.println("Current Weapon: "+player.getWeapon().getName()+"");
                 if(player.getWeaponRack().get(1).getOwned()==true){System.out.println("(1)Hatchet");}
                 if(player.getWeaponRack().get(2).getOwned()==true){System.out.println("(2)Sword and Shield");}
-                if(player.getWeaponRack().get(3).getOwned()==true){System.out.println("(3)Magical Staff");}
+                if(player.getWeaponRack().get(3).getOwned()==true){System.out.println("(3)Msgical Staff");}
                 if(player.getWeaponRack().get(4).getOwned()==true){System.out.println("(4)Cursed dagger");}
                 String c=input.next();
                 printWeapons(c);
@@ -2842,6 +2766,7 @@ public class CE extends JPanel
         else if(c.equals("3")&&!player.getWeaponRack().get(3).getOwned()){
             System.out.println("Magical Staff:");
             System.out.println("Passive: Overflow-Upon reaching max mana abilities will be upgraded. Mana will be reset to starting mana");
+            System.out.println("         -2 mana per turn.");
             System.out.println("Mana surge: Next attack will consume and deal 30% of current mana as bonus damage[30% Mana]");
             System.out.println("            *does not take up turn");
             System.out.println("            Overflow-Deal 100% of max mana as true damage");
@@ -2863,7 +2788,8 @@ public class CE extends JPanel
         }
         else if(c.equals("4")){
             System.out.println("Cursed Dagger:");
-            System.out.println("Passive:Using basic actions(1-3) gives wrath stacks. Lose health equal to half of wrath every turn.");
+            System.out.println("Passive: -2 mana and health regeneration, basic actions gives wrath stacks");
+            System.out.println("         Lose health equal to half of wrath every turn.");
             System.out.println("Forbidden Pact:Heal 25+player's heal and curse yourself for 2 turns[20 Mana]");
             System.out.println("               *Does not stack on previous curses.");
             System.out.println("Wrath: For each wrath stack, attack(1/2 Damage) that many times. Curse youself for 2 turns[30 Mana] ");
@@ -3112,13 +3038,14 @@ public class CE extends JPanel
      * Used to check of the player can buy an item.
      * will print "You don't have enough gold if they cannot"
      */
-    public boolean canBuy(int gold){
+    public boolean canBuy(int gold) throws Exception{
         if(this.gold<gold){
             System.out.println("You dont have enough to buy this item");
             return false;
         }
         else{
             this.gold-=gold;
+            playEffect("Gold Drop");
         }
         return true;
     }
@@ -3217,6 +3144,21 @@ public class CE extends JPanel
         }
     }
 
+    public void playEffect(String name) throws Exception
+    {
+        try
+        {
+            File file = new File("C:\\Users\\yukioh99\\Desktop\\Project Sounds\\Downloads here\\Cut Files\\"+name+".wav");
+            //Kenny's Directory// File file = new File("
+            AudioInputStream sound = AudioSystem.getAudioInputStream(file);
+            clip = AudioSystem.getClip();
+            clip.open(sound);
+            clip.setFramePosition(0);  // Must always rewind!
+            clip.start();
+        }
+        catch(Exception e){}
+    }
+
     public void endGame(){
         playerLost=true;
     }
@@ -3233,82 +3175,6 @@ public class CE extends JPanel
         eigthCheck=false;
         ninthCheck=false;
         tenthCheck=false;
-    }
-
-    public String getWeaponName() throws Exception{
-        if(player.hatchet()){
-            draw("Hatchet");return "Hatchet";
-        }
-        else if(player.swordandboard()){
-            draw("SwordAndShield");return "SwordAndShield";
-        }
-        else if(player.dagger()){
-            draw("Dagger");return "Dagger";
-        }
-        else if(player.staff()){
-            draw("Staff");return "Staff";
-        }
-        else{
-            draw("Sword");return "Sword";
-        }
-    }
-
-    public String getMonsterName() throws Exception{
-        if(monster.getId()==1){
-            draw("Slime");return "Slime";
-        }
-        else if(monster.getId()==2){
-            draw("Goblin");return "Goblin";
-        }
-        else if(monster.getId()==3){
-            draw("Skeleton");return "Skeleton";
-        }
-        else if(monster.getId()==4){
-            draw("Wolf");return "Wolf";
-        }
-        else if(monster.getId()==11){
-            draw("Ghoul");return "Ghoul";
-        }
-        else if(monster.getId() == 12)
-        {
-            draw("Golem");return "Golem";
-        }
-        else if(monster.getId()==13){
-            draw("Orc");return "Orc";
-        }
-        else if(monster.getId()==14)
-        {   
-            draw("Crab");return "Crab";
-        }
-        else if(monster.getId()==101){
-            draw("Knight");return "Knight";
-        }
-        else if(monster.getId()==102)
-        {
-            draw("SummerWitch");return "SummerWitch";
-        }
-        else if(monster.getId()==103)
-        {
-            draw("FallWitch");return "FallWitch";
-        }
-        else if(monster.getId()==104)
-        {
-            draw("WinterWitch");return "WinterWitch";
-        }
-        else if(monster.getId()==105)
-        {
-            draw("SpringWitch");return "SpringWitch";
-        }
-        else if(monster.getId()==9999){
-            draw("King");return "King";
-        }
-        else if(monster.getId()==9001){
-            draw("Iron");return "Iron";
-        }
-        else if(monster.getId()==9002){
-            draw("Goon");return "Goon";
-        }
-        return "";
     }
 
     public static void bgm() throws Exception
