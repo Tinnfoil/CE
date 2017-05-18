@@ -99,7 +99,8 @@ public class CE extends JPanel
     public void paintComponent(Graphics g){
         Graphics2D g2 = (Graphics2D)g;
         try{
-            image= ImageIO.read(new File("Images\\"+name+".png"));
+            //Kenny//image= ImageIO.read(new File("Images\\"+name+".png"));
+            image = ImageIO.read(new File("C:\\Users\\yukioh99\\Desktop\\Project Sounds\\CE-master\\CE-master\\"+name+".png"));
         }
         catch(Exception e){}
         g2.drawImage(image,0,0,null);
