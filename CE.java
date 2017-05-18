@@ -64,7 +64,7 @@ public class CE extends JPanel
     public static boolean mDefStance, bossTimer;
     public static int timer;
     public static String bossName;
-    Player player= new Player(100,100,100,100,10,0,5,5,"");
+    Player player= new Player(100,100,100,100,10,0,0,5,"");
     Monster monster= new Monster(100,100,0,0,0,0,"",0);
     Monster boss = new Monster(100,100,0,0,0,0,"",0);
     Extra e= new Extra();
@@ -77,7 +77,8 @@ public class CE extends JPanel
         day=0;
         dungeon=1;
         guardAmount=5;
-        startingMana=100;
+        startingMana=0;
+        goodPot=1;
         waterBought=false;
         infight=false;
         playerLost=false;
@@ -100,7 +101,7 @@ public class CE extends JPanel
         Graphics2D g2 = (Graphics2D)g;
         try{
             //Kenny//image= ImageIO.read(new File("Images\\"+name+".png"));
-            image = ImageIO.read(new File("C:\\Users\\yukioh99\\Desktop\\Project Sounds\\CE-master\\CE-master\\"+name+".png"));
+            image = ImageIO.read(new File("Images\\"+name+".png"));
         }
         catch(Exception e){}
         g2.drawImage(image,0,0,null);
@@ -143,21 +144,22 @@ public class CE extends JPanel
      * 
      */
     public void town() throws Exception{
+        removeEffects();
         Scanner input= new Scanner(System.in);
         String a="1";
         String b="1";
-        try
-        {
-            File file = new File("C:\\Users\\yukioh99\\Desktop\\02_-_Blue_Water.wav");
-            //Kenny's Directory// File file = new File("
-            AudioInputStream sound = AudioSystem.getAudioInputStream(file);
-            clip = AudioSystem.getClip();
-            clip.open(sound);
-            clip.setFramePosition(0);  // Must always rewind!
-            clip.start();
-        }
-        catch(Exception e){System.out.println("BLOOP");}
         while(playerLost==false){
+            try
+            {
+                File file = new File("C:\\Users\\yukioh99\\Desktop\\02_-_Blue_Water.wav");
+                //Kenny's Directory// File file = new File("
+                AudioInputStream sound = AudioSystem.getAudioInputStream(file);
+                clip = AudioSystem.getClip();
+                clip.open(sound);
+                clip.setFramePosition(0);  // Must always rewind!
+                clip.start();
+            }
+            catch(Exception e){System.out.println("BLOOP");}
             draw("Town");
             day++; //every call for this method will increase the day.
             System.out.println("{Day "+day+"}");
@@ -391,7 +393,10 @@ public class CE extends JPanel
                     if(dungeon==4){System.out.println("(4)The Throne 4");}
                     b= input.next();
                     if(b.equals("1")&&dungeon==1){
-                        clip.stop();
+                        try{
+                            clip.stop();
+                        }
+                        catch(Exception e){}
                         draw("Background2");background="Background2";
                         playEffect("Walk");
                         if(!dungeon(1,4)){
@@ -448,7 +453,7 @@ public class CE extends JPanel
      */
     public boolean dungeon(int type, int size) throws Exception{
         Random RN=new Random();
-        
+
         Scanner input = new Scanner(System.in);
         dung= new int[size];
         if(RN.nextInt(100)<=20){
@@ -2433,12 +2438,11 @@ public class CE extends JPanel
         }
         else if(b.equals("1")&&player.staff())
         {
+            manaSurge();
             if(overflow){
-                Thread.sleep(200);
                 return true;
             }
             else{            
-                manaSurge();
                 return false;
             }
         }
@@ -2481,10 +2485,12 @@ public class CE extends JPanel
             return false;
         }
         else if(b.equals(fireNum)&&firePot>0){
+            firePot--;
             fireBlast();
             return false;
         }
         else if(b.equals(goodNum)&&goodPot>0){
+            goodPot--;
             draw("Immune");
             player.immune(2);
             playEffect("Potion");
@@ -2593,7 +2599,7 @@ public class CE extends JPanel
             draw("Curse");
             System.out.print("Cursed:"+curseTimer+" ");
         }
-        if(player.getImmune()&&player.getImmuneTimer()>=1){
+        if(player.getImmune()&&player.getImmuneTimer()>1){
             draw("Immune");
             int amount=player.getImmuneTimer()-1;
             System.out.print("Immune:"+amount+" ");
@@ -3370,8 +3376,8 @@ public class CE extends JPanel
     public static void println(String str, int delay, int pause, String name) throws Exception{
         try
         {
-            File file = new File("C:\\Users\\yukioh99\\Desktop\\Project Sounds\\Downloads here\\Cut Files\\"+name+".wav");
-            //Kenny's Directory// File file = new File("
+            //File file = new File("C:\\Users\\yukioh99\\Desktop\\CE\\Sounds\\Cut Files\\"+name+".wav");
+            File file = new File("C:\\Users\\Kenny\\Documents\\CE\\Sounds\\Audio Files\\"+name+".wav");
             AudioInputStream sound = AudioSystem.getAudioInputStream(file);
             clip = AudioSystem.getClip();
             clip.open(sound);
@@ -3433,6 +3439,5 @@ public class CE extends JPanel
         ninthCheck=false;
         tenthCheck=false;
     }
-
 
 }
