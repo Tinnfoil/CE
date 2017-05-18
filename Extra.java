@@ -554,6 +554,32 @@ public class Extra
         else if(a==5){print("Mary:"+name3+"! You're hurt!",30,500);println("Sit down. Let me take care of everything",30,500);}
     }
     
+        public void end() throws Exception{
+        println("You have won CE The Awakening!",20);
+        println("Thank you for playing the game!",20);
+        println("Credits",10,100);
+        println("Game Designers -Kenny Doan and Brian Tran",7);
+        println("AudioMaster    -Brian",7);
+        println("Art            -Kenny",7);
+        println("Concept        -Kenny",7);
+        println("Voice Actors",10,100);
+        println("Slime          -Kenny",7);
+        println("Goblin         -Eddie and James",7);
+        println("Wolf           -Kenny",7);
+        println("Skeleton       -",7);
+        println("Ghoul          -Andy",7);
+        println("Orc            -",7);
+        println("Crab           -Kenny",7);
+        println("Golem          -Eddie",7);
+        println("Knight         -",7);
+        println("Witch          -Trina",7);
+        println("King Joe       -Renzo",7);
+        println("Priestess      -Trina",7);
+        println("Bartender      -Kenny",7);
+        println("BlackSmith     -Kenny",7);
+        printTitle();
+    }
+    
     /**
      * Prints a given String with a delay between letters.
      * Ex. print("hello",100); -->prints and finishes hello in 500 miliseconds
