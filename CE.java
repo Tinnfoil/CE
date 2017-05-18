@@ -118,7 +118,6 @@ public class CE extends JPanel
 
     public void start() throws Exception{
         Scanner input= new Scanner(System.in);
-        bgm();
         draw("Background6");
         println("You see a faint light in the far distance.",10,500);
         println("Curious, you appoarch it and find a rock stuck between some boulders",10,500);
@@ -143,10 +142,20 @@ public class CE extends JPanel
      * 
      */
     public void town() throws Exception{
-        bgm();
         Scanner input= new Scanner(System.in);
         String a="1";
         String b="1";
+        try
+        {
+            File file = new File("C:\\Users\\yukioh99\\Desktop\\02_-_Blue_Water.wav");
+            //Kenny's Directory// File file = new File("
+            AudioInputStream sound = AudioSystem.getAudioInputStream(file);
+            clip = AudioSystem.getClip();
+            clip.open(sound);
+            clip.setFramePosition(0);  // Must always rewind!
+            clip.start();
+        }
+        catch(Exception e){System.out.println("BLOOP");}
         while(playerLost==false){
             draw("Town");
             day++; //every call for this method will increase the day.
@@ -381,6 +390,7 @@ public class CE extends JPanel
                     if(dungeon==4){System.out.println("(4)The Throne 4");}
                     b= input.next();
                     if(b.equals("1")&&dungeon==1){
+                        clip.stop();
                         draw("Background2");background="Background2";
                         playEffect("Walk");
                         if(!dungeon(1,4)){
@@ -391,6 +401,7 @@ public class CE extends JPanel
                         }
                     }
                     else if(b.equals("2")&&dungeon==2){
+                        clip.stop();
                         draw("Background3");background="Background3";
                         playEffect("Walk");
                         if(!dungeon(2,5)){
@@ -401,6 +412,7 @@ public class CE extends JPanel
                         }
                     }
                     else if(b.equals("3")&&dungeon==3){
+                        clip.stop();
                         draw("Background4");background="Background4";
                         playEffect("Walk");
                         if(!dungeon(3,5)){
@@ -411,6 +423,7 @@ public class CE extends JPanel
                         }
                     }
                     else if(b.equals("4")&&dungeon==4){
+                        clip.stop();
                         draw("Background5");background="Background5";
                         playEffect("Walk");
                         if(!dungeon(4,6)){
@@ -434,6 +447,7 @@ public class CE extends JPanel
      */
     public boolean dungeon(int type, int size) throws Exception{
         Random RN=new Random();
+        
         Scanner input = new Scanner(System.in);
         dung= new int[size];
         if(RN.nextInt(100)<=20){
@@ -518,25 +532,29 @@ public class CE extends JPanel
                     System.out.println("(0)Continue Dungeon");
                     String a= input.next();
                     if(a.equals("1")){
-                        System.out.println("Rignus: Need a thing or two? I think I got what you want.");
+                        e.rignusTalk();
                         System.out.println("(1)Health Potion{Heals 20+player's heal}[30 gold]|Max:5|");
                         System.out.println("(2)Mana Flask{Regenerates 30% of player's missing mana}[25 gold]|Max:5|");
                         System.out.println("(3)Fireblast Potion{Deals 10% of enemy's current health over three turns}[30 Gold]");
                         System.out.println("(4)Rignus's Good stuff{Grants immunity of damage for one turn}[30 Gold]");
                         String b= input.next();
                         if(b.equals("1")&&canBuy(30)&&healthPot<5){
+                            e.rignusBuy();
                             println("You bought a Health Potion",20);
                             healthPot++;
                         }
                         else if(b.equals("2")&&canBuy(25)&&manaPot<5){
+                            e.rignusBuy();
                             println("You bought a Mana Flask",20);
                             manaPot++;
                         }
                         else if(b.equals("3")&&canBuy(30)){
+                            e.rignusBuy();
                             println("You bought a FireBlast Potion",20);
                             firePot++;
                         }
                         else if(b.equals("4")&&canBuy(30)){
+                            println("{Rignus} Wicked...",30,0,"Rignus 4.1");
                             println("You bought a RGS Potion",20);
                             goodPot++;
                         }
@@ -855,6 +873,7 @@ public class CE extends JPanel
                 player.setHealth(1);
             }
             draw("Win");
+            e.deathLine(id);
             println("You are victorious.",50);
             int goldfound=0;
             if(mimi&&RN.nextInt(100)<=50){
@@ -1220,8 +1239,9 @@ public class CE extends JPanel
             boss.setDefense(boss.getDefense()-1);
             monster= new Monster(100,100,0,0,0,0,"",0);
             monster = boss;
+            println("{Iron Vanguard} Ugh...",30,0,"Iron 4");
             println("You defeated "+monster.getName()+" before "+bossName+" was able to recover!{-1 defense}",25);
-            println(""+bossName+": Incompetent underling...",20);
+            println("{King Joe} It wasn't even 6 turns yet...",30,0,"King 15");
             draw("King");mname="King";
             monster.printStats();
             monster.setAID(0);
@@ -1231,8 +1251,9 @@ public class CE extends JPanel
             boss.setDamage(boss.getDamage()-1);
             monster= new Monster(100,100,0,0,0,0,"",0);
             monster = boss;
+            println("{Goon} Save me boss...",30,0,"Goon 3.2");
             println("You defeated "+monster.getName()+" before "+bossName+" was able to recover!{-1 attack}",25);
-            println(monster.getName()+": What a useless bonobo...",20);
+            println("{King Joe} It wasn't even 6 turns yet...",30,0,"King 15");
             draw("King");mname="King";
             monster.printStats();
             monster.setAID(0);
@@ -1413,6 +1434,7 @@ public class CE extends JPanel
     {
         if(overflow){
             draw("Explosion");
+            playEffect("Explosion");
             print("EXPL",50);print("OOOOO",30);println("SION!!!",10);
             int damage= player.getMana();
             player.setMana(startingMana);
@@ -1667,6 +1689,7 @@ public class CE extends JPanel
         else if(id==2){
             monster= new Monster(150,150,4,3,0,7,"The Goblin",2);
             System.out.println("You encounter a "+monster.getName().substring(3)+"");
+            println("{Goblin} SURPRISE! hehehe...",25,0,"Goblin 3");
             e.printGoblin();
         }
         else if(id==3){
@@ -1740,7 +1763,8 @@ public class CE extends JPanel
         else if(id==9999){
             boss= new Monster(500,500,15,5,10,5,"King Joe",9999);
             monster=boss;
-            println("King Joe says something cool!",50);
+            println("{King Joe} I am King Joe",30,200,"King 1");
+            println("{King Joe} You look a bit different from last time...",30,0,"King 3");
         }
         else if(id==-1){
             infight=false;
@@ -1784,6 +1808,7 @@ public class CE extends JPanel
         if(id==2&&monster.getAID()==0&&(double)monster.getHealth()/monster.getMaxHealth()<=.7&&RN.nextInt(100)<=20){//Goblin
             draw("Angry");draw("Bleeding");
             e.printMadGoblin();
+            playEffect("Goblin 4");
             println(monster.getName()+" stabs you! {You are bleeding}",30);
             mDOT(monster.getDamage()/2,3);
             monster.setAID(RN.nextInt(2));
@@ -1792,6 +1817,7 @@ public class CE extends JPanel
         if(id==2&&monster.getAID()==1&&RN.nextInt(100)<=10){//Goblin
             draw("Angry");
             e.printAngryGoblin();
+            playEffect("Goblin 4");
             println(monster.getName()+" enrages {+4 damage}!",30);
             monster.setDamage(monster.getDamage()+4);
             monster.setAID(RN.nextInt(2));
@@ -1819,6 +1845,7 @@ public class CE extends JPanel
         if(id==4&&monster.getAID()==0&&RN.nextInt(100)<=20){//Wolf
             draw("Angry");
             e.printAngryWolf();
+            playEffect("Wolf 1");
             println(monster.getName()+" bites off some of your armor!{-1 defense}",20);
             int damage=(int)(monster.getDamage()*1.5);
             println("You take "+damage+" damage.",25);
@@ -1829,6 +1856,7 @@ public class CE extends JPanel
         if(id==4&&monster.getAID()==1&&RN.nextInt(100)<34){//Wolf
             draw("Angry");
             e.printAngryWolf();
+            playEffect("Wolf 3");
             println(monster.getName()+" howls {+3 damage}!",25);
             monster.setDamage(monster.getDamage()+3);
             monster.setAID(0);
@@ -1865,6 +1893,7 @@ public class CE extends JPanel
         if(id==12&&monster.healthPercentage()<0.75&&monster.getAID()==0)//Golem
         {
             draw("Golembreak");
+            playEffect("Golem 2");
             println("Those rocks that you've been knocking off the being seem to allow it to move more easily.",35);
             monster.setDamage(monster.getDamage()+5);
             monster.setDefense(monster.getDefense()/2);
@@ -1876,6 +1905,7 @@ public class CE extends JPanel
         {
             draw("Angry");draw("Golembreak");
             e.printAngryGolem();
+            playEffect("Golem 2");
             println("All the rocks have fallen off its body, now its time for the real fight!",35);
             monster.setDamage(monster.getDamage()+5);
             monster.setDefense(monster.getDefense()/2);
@@ -1890,6 +1920,7 @@ public class CE extends JPanel
             {
                 draw("Angry");draw("GolemBeam");
                 e.printAngryGolem();
+                println("{Golem} DEATHBEAM!!!!",25,0,"Golem 1");
                 println("A fiery beam fires from within the being.",35);
                 int inflicted = monster.getDamage()-player.getDefense();
                 player.setHealth(player.getHealth()-inflicted);
@@ -2144,12 +2175,18 @@ public class CE extends JPanel
 
         if(monster.getId()==9999&&(turnTimer>=5||monster.healthPercentage()<=.95)&&monster.getAID()==0){//boss
             draw("Angry");
+            println("{King Joe} Surprise Attack!",30,0,"King 11");
             println(monster.getName()+" hits you and cancels your guard!",35);
             cancelGuard(1);
             monster.setAID(1);
             return true;
         }
         if(monster.getId()==9999&&monster.getAID()==1){//boss
+            if(RN.nextInt(2)==0)
+            {
+                println("{King Joe} I recommend guarding for this...",30,0,"King 4");
+            }
+            else {println("{King Joe} Make sure you don't press 1...",30,0,"King 12");}
             if(RN.nextInt(2)==0){
                 println(monster.getName()+" backs up...",35);
             }
@@ -2161,6 +2198,9 @@ public class CE extends JPanel
         }
         if(monster.getId()==9999&&monster.getAID()==2){//boss
             draw("Angry");
+            println("{King Joe} You didn't guard?",30,0,"King 6");
+            println("{King Joe} I warned you...",30,0,"King 13");
+            println("{King Joe} Hope your insurance covers this...",30,0,"King 5");
             if(RN.nextInt(2)==0){
                 println(monster.getName()+" slashes you across the chest!{Bleeding}",30);
                 DOT(2,monster.getDamage());
@@ -2174,6 +2214,7 @@ public class CE extends JPanel
             return true;
         }
         if(monster.getId()==9999&&monster.getAID()==3){//boss
+            println("{King Joe} ow...",30,0,"King 7");
             println("and deflected "+monster.getName()+"'s attack and lowered his defense!{-1 defense} ",20);// the and is suppose to act as if your guard did that :3
             monster.setDefense(monster.getDefense()-1);
             monster.setAID(4);
@@ -2189,6 +2230,7 @@ public class CE extends JPanel
             mDefStance=false;
             if(RN.nextInt(2)==0){
                 draw("Angry");
+                println("{King Joe} I'll stop your mana regen.",30,0,"King 9");
                 println(monster.getName()+" curses you with his sword!{Cursed}",30);
                 curse(3);
             }
@@ -2197,38 +2239,42 @@ public class CE extends JPanel
                 draw("Fireball");
                 int damage=(int)((double)monster.getDamage()*1.5);
                 player.setHealth(player.getHealth()-damage);
+                println("{King Joe} Fireball",30,0,"King 8");
                 println(monster.getName()+" throws a fireball at you and deals "+damage+" damage!{Unable to heal}",30);
                 cancelRest(3);
                 player.burn(3);
             }
             if(RN.nextInt(2)==0){
-                println(monster.getName()+": Come her soldier! Assist me!",30);
+                println(monster.getName()+": Come here soldier! Assist me!",30);
                 boss = monster;
                 reset();draw("Iron");mname="Iron";
                 monster = new Monster(100,100,7,2,0,0,"The Iron Vanguard",9001);
+                println("{Iron Vanguard} Oh, you're real strong, aren't you?",30,0,"Iron 1");
                 monster.printStats();
             }
             else{
-                println(monster.getName()+": Henchman! Take care of this nusiance",30);
+                println("{King Joe} I'm taking a break, hey goon, get over here!",30,0,"King 14");
                 boss = monster;
                 reset();draw("Goon");mname="Goon";
                 monster = new Monster(100,100,10,0,0,0,"The Lowly Goon",9002);
+                println("{Goon} Hey boss, what'd we do now boss?",30,0,"Goon 1");
                 monster.printStats();
             }
             timer(6);
             return true;
         }
         if(monster.getId()==9001&&monster.getAID()==0&&RN.nextInt(100)<=20){// Goon 1 Vanguard
-            draw("Angry");
+            println("{Iron Vanguard} Take this!",30,0,"Iron 2");
             println(monster.getName()+" bashes you with his shield!{Confused}",30);
-            if(player.swordandboard()){println(monster.getName()+": How do you like your own medicine?",20);}
+            //if(player.swordandboard()){println(monster.getName()+": How do you like your own medicine?",20);}
             confuse(2);
             monster.setAID(monster.getAID()+1);
             return true;
         }
         if(monster.getId()==9001&&monster.getAID()==1&&RN.nextInt(100)<=20){// Goon 1 Vanguard
-            println(monster.getName()+" thrusts you and deals "+monster.getDamage()+"",30);
+            println("{Iron Vanguard} Should hit me harder next time!",30,0,"Iron 3");
             draw("Angry");
+            println(monster.getName()+" thrusts you and deals "+monster.getDamage()+"",30);
             player.setHealth(player.getHealth()-monster.getDamage());
             monster.setAID(monster.getAID()+1);
             return true;
@@ -2243,6 +2289,7 @@ public class CE extends JPanel
             draw("Angry");
             int damage= (int)(monster.getDamage()*1.2);
             println(monster.getName()+"does a reckless attack and deals "+damage+" damage!{-1 defense}",30);
+            println("{Goon} Did you see that boss?",30,0,"Goon 2");
             player.setHealth(player.getHealth()-damage);
             monster.setAID(monster.getAID()+1);
             return true;
@@ -3386,23 +3433,5 @@ public class CE extends JPanel
         tenthCheck=false;
     }
 
-    public static void bgm() throws Exception
-    {
-        try
-        {
-            //File file = new File("C:\\Users\\yukioh99\\Desktop\\Project Sounds\\Test Sounds\\Re-Zero.wav");
-            File file = new File("C:\\Users\\yukioh99\\Desktop\\02_-_Blue_Water.wav");
-            //Kenny's Directory// 
-            AudioInputStream sound = AudioSystem.getAudioInputStream(file);
-            clip = AudioSystem.getClip();
-            clip.open(sound);
-            clip.setFramePosition(0);  // Must always rewind!
-            int temp = Integer.MAX_VALUE;
-            clip.loop(temp);
-            System.out.println("bloop");
-        }
-        catch(Exception e){
-        }
-    }
-    
+
 }
