@@ -460,17 +460,19 @@ public class Extra
 
     public void tavernTalk() throws Exception{
         Random RN= new Random();
-        int a=RN.nextInt(5)+1;
-        if(a==1){println("Bartender:Let me tell you a secret, these beers don't get you drunk",30,500);}
-        else if(a==2){print("Bartender:Beer here is cheap...",30,500);println("So buy some. Or get something else...",30,500);}
-        else if(a==3){println("Bartender:I only sell beer... haha...",30,500);}
-        else if(a==4){println("Bartender:Need help? Don't ask me.",30,500);}
-        else if(a==5){println("Bartender:Welcome to the tavern!",30,500);}
+        int a=RN.nextInt(6)+1;
+        if(a==1){println("{Bartender} Let me tell you a secret, these beers don't get you drunk",30,500,"Bar 1");}
+        
+        else if(a==2){println("{Bartender} Beer here is cheap...So buy some. Or get something else...",30,500,"Bar 2");}
+        else if(a==3){println("{Bartender} I only sell beer... haha...",30,500,"Bar 3.1");}
+        else if(a==4){println("{Bartender} Need help? Don't ask me.",30,500,"Bar 4");}
+        else if(a==5){println("{Bartender} Welcome to the tavern!",30,500,"Bar 5");}
+        else if(a==6){println("{Bartender} I only sell beer..",30,500,"Bar 3.2");}
     }
 
     public void tavernSecret() throws Exception{
-        println("Bartender:Hey, never thought you would be the kind of person who would be interested in this",30,500);
-        println("Bartender:Follow me...",30,500);
+        println("{Bartender} Never thought you would be the kind of person who would be interested in this",30,500,"Bar 6");
+        println("{Bartender} Follow me...",30,500,"Bar 7");
     }
 
     public void setName1(String name){
@@ -556,7 +558,7 @@ public class Extra
      * Prints a given String with a delay between letters.
      * Ex. print("hello",100); -->prints and finishes hello in 500 miliseconds
      */
-    public static void println(String str, int delay, int pause, String name) throws Exception{
+    public void println(String str, int delay, int pause, String name) throws Exception{
         try
         {
             File file = new File("C:\\Users\\yukioh99\\Desktop\\Project Sounds\\Downloads here\\Cut Files\\"+name+".wav");
@@ -587,6 +589,10 @@ public class Extra
             }
             System.out.println();
             Thread.sleep(pause);
+            System.out.println("BLOOP");
         }
     }
 }
+
+
+
