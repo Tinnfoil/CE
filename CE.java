@@ -1736,6 +1736,7 @@ public class CE extends JPanel
         else if(id==101){
             monster= new Monster(300,300,10,5,5,5,"The Knight",101);
             System.out.println("You find a lone "+monster.getName().substring(3)+"");
+            println("{Knight} Want to see my big sword?",30,0,"Knight 8");
             e.printKnight();
         }
         else if(id==102)
@@ -2002,6 +2003,7 @@ public class CE extends JPanel
         }
 
         if(id==101&&monster.getAID()==0&&(turnTimer>=5||monster.healthPercentage()<=.8)&&(!attackCancelled&&!guardCancelled&&!restCancelled)){//Knight
+            println("{Knight} Let me show you my special move!",30,0,"Knight 5");
             draw("Angry");draw("Curse");
             println(monster.getName()+" curses you!",20);
             curse(3);
@@ -2011,12 +2013,14 @@ public class CE extends JPanel
         if(id==101&&monster.getAID()==1&&monster.healthPercentage()<=.8&&(!attackCancelled&&!guardCancelled&&!restCancelled)){//Knight
             draw("Angry");draw("Confuse");
             e.printAngryKnight();
+            playEffect("Knight 7");
             println(monster.getName()+" knocks you back and confuses you!",20);
             confuse(3);
             monster.setAID(RN.nextInt(3)+2);
             return true;
         }
         if(id==101&&monster.getAID()==2&&!confused&&RN.nextInt(100)<90){//Knight
+            println("{Knight} Have at you",30,0,"Knight 6");
             draw("Angry");
             println(monster.getName()+" knocks off your weapon!",30);
             cancelAttack(2);
@@ -2027,6 +2031,7 @@ public class CE extends JPanel
             draw("Angry");
             e.printAngryKnight();
             println(monster.getName()+" smashes your arm! Preventing your guard",30);
+            println("{Knight} touche...",30,0,"Knight 1");
             cancelGuard(2);
             monster.setAID(RN.nextInt(2));
             return true;
@@ -2034,6 +2039,7 @@ public class CE extends JPanel
         if(id==101&&monster.getAID()==4&&!confused&&RN.nextInt(100)<90){//Knight
             draw("Angry");draw("Fireball");draw("Burn");
             println(monster.getName()+" burns you {Unable to heal}!",30);
+             println("{Knight} It's getting real hot in here...",30,0,"Knight 4");
             cancelRest(2);
             player.burn(3);
             DOT(3,monster.getDamage());
@@ -3376,8 +3382,8 @@ public class CE extends JPanel
     public static void println(String str, int delay, int pause, String name) throws Exception{
         try
         {
-            //File file = new File("C:\\Users\\yukioh99\\Desktop\\CE\\Sounds\\Cut Files\\"+name+".wav");
-            File file = new File("C:\\Users\\Kenny\\Documents\\CE\\Sounds\\Audio Files\\"+name+".wav");
+            File file = new File("C:\\Users\\yukioh99\\Desktop\\CE\\Sounds\\Cut Files\\"+name+".wav");
+            //File file = new File("C:\\Users\\Kenny\\Documents\\CE\\Sounds\\Audio Files\\"+name+".wav");
             AudioInputStream sound = AudioSystem.getAudioInputStream(file);
             clip = AudioSystem.getClip();
             clip.open(sound);
