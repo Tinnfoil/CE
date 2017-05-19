@@ -24,19 +24,20 @@ public class Extra
         name3="";
         try
         {
-            File file = new File("C:\\Users\\yukioh99\\Desktop\\Project Sounds\\Downloads here\\Cut Files\\BGM1.wav");
-            //Kenny's Directory// File file = new File("
+            //File file = new File("C:\\Users\\yukioh99\\Desktop\\Project Sounds\\Downloads here\\Cut Files\\BGM1.wav");
+            File file = new File("C:\\Users\\Kenny\\Documents\\CE\\Audio Files\\Audio Files\\BGM1.wav");
             AudioInputStream sound = AudioSystem.getAudioInputStream(file);
             bgm1 = AudioSystem.getClip();
             bgm1.open(sound);
             bgm1.setFramePosition(0);
-            file = new File("C:\\Users\\yukioh99\\Desktop\\Project Sounds\\Downloads here\\Cut Files\\BGM2.wav");
+            //file = new File("C:\\Users\\yukioh99\\Desktop\\Project Sounds\\Downloads here\\Cut Files\\BGM2.wav");
+            file = new File("C:\\Users\\Kenny\\Documents\\CE\\Audio Files\\Audio Files\\BGM2.wav");
             sound = AudioSystem.getAudioInputStream(file);
             bgm2 = AudioSystem.getClip();
             bgm2.open(sound);
             bgm2.setFramePosition(0); 
-            file = new File("C:\\Users\\yukioh99\\Desktop\\Project Sounds\\Downloads here\\Cut Files\\BGM3.wav");
-            //Kenny's Directory// File file = new File("
+            //file = new File("C:\\Users\\yukioh99\\Desktop\\Project Sounds\\Downloads here\\Cut Files\\BGM3.wav");
+            file = new File("C:\\Users\\Kenny\\Documents\\CE\\Audio Files\\Audio Files\\BGM3.wav");
             sound = AudioSystem.getAudioInputStream(file);
             bgm3 = AudioSystem.getClip();
             bgm3.open(sound);
@@ -545,7 +546,7 @@ public class Extra
         println("You are suddenly surrounded by multiple men. All wearing sunglasses",20,500);
         println("One man walks in front of me",20,500);
         cont();
-        println("{Billy} Well hello there. Welcome to Koon Town! My name's Billy",20,500);
+        println("{Billy} Well hello there. Welcome to Edna! My name's Billy",20,500);
         println("{Billy} Im the mayor of the town and unfortunately for you.",20);
         println("{Billy} You're going to have to work for us.",20,500);
         cont();
@@ -640,12 +641,12 @@ public class Extra
         println("Slime          -Kenny",7);
         println("Goblin         -Eddie and James",7);
         println("Wolf           -Kenny",7);
-        println("Skeleton       -",7);
+        println("Skeleton       -Renzo",7);
         println("Ghoul          -Andy",7);
-        println("Orc            -",7);
+        println("Orc            -Renzo",7);
         println("Crab           -Kenny",7);
         println("Golem          -Eddie",7);
-        println("Knight         -",7);
+        println("Knight         -Daniel",7);
         println("Witch          -Trina",7);
         println("King Joe       -Renzo",7);
         println("Priestess      -Trina",7);
@@ -663,8 +664,8 @@ public class Extra
     public void println(String str, int delay, int pause, String name) throws Exception{
         try
         {
-            File file = new File("C:\\Users\\yukioh99\\Desktop\\Project Sounds\\Downloads here\\Cut Files\\"+name+".wav");
-            //Kenny's Directory// File file = new File("
+            //File file = new File("C:\\Users\\yukioh99\\Desktop\\Project Sounds\\Downloads here\\Cut Files\\"+name+".wav");
+            File file = new File("C:\\Users\\Kenny\\Documents\\CE\\Audio Files\\Audio Files\\"+name+".wav");
             AudioInputStream sound = AudioSystem.getAudioInputStream(file);
             clip = AudioSystem.getClip();
             clip.open(sound);
@@ -713,8 +714,8 @@ public class Extra
     {
         try
         {
-            File file = new File("C:\\Users\\yukioh99\\Desktop\\Project Sounds\\Downloads here\\Cut Files\\"+name+".wav");
-            //Kenny's Directory// File file = new File("
+            //File file = new File("C:\\Users\\yukioh99\\Desktop\\Project Sounds\\Downloads here\\Cut Files\\"+name+".wav");
+            File file = new File("C:\\Users\\Kenny\\Documents\\CE\\Audio Files\\Audio Files\\"+name+".wav");
             AudioInputStream sound = AudioSystem.getAudioInputStream(file);
             clip = AudioSystem.getClip();
             clip.open(sound);
