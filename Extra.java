@@ -15,12 +15,34 @@ import java.io.*;
 public class Extra
 {
     public String name1, name2, name3;
-    public static Clip clip;
+    public static Clip clip;// Primary Audio clip
+    public static Clip bgm1,bgm2,bgm3;
     public Extra()
     {
         name1="";
         name2="";
         name3="";
+        try
+        {
+            File file = new File("C:\\Users\\yukioh99\\Desktop\\Project Sounds\\Downloads here\\Cut Files\\BGM1.wav");
+            //Kenny's Directory// File file = new File("
+            AudioInputStream sound = AudioSystem.getAudioInputStream(file);
+            bgm1 = AudioSystem.getClip();
+            bgm1.open(sound);
+            bgm1.setFramePosition(0);
+            file = new File("C:\\Users\\yukioh99\\Desktop\\Project Sounds\\Downloads here\\Cut Files\\BGM2.wav");
+            sound = AudioSystem.getAudioInputStream(file);
+            bgm2 = AudioSystem.getClip();
+            bgm2.open(sound);
+            bgm2.setFramePosition(0); 
+            file = new File("C:\\Users\\yukioh99\\Desktop\\Project Sounds\\Downloads here\\Cut Files\\BGM3.wav");
+            //Kenny's Directory// File file = new File("
+            sound = AudioSystem.getAudioInputStream(file);
+            bgm3 = AudioSystem.getClip();
+            bgm3.open(sound);
+            bgm3.setFramePosition(0);
+        }
+        catch(Exception e){System.out.println("{SYSTEM} Unable to play background audio");}
     }
 
     public static void main(String[] args) throws Exception{
@@ -40,9 +62,9 @@ public class Extra
 
     public void printTown() throws Exception{
         println("--__________________--",5);
-        println("-|  Welcome to      |-",5);
+        println("-|    Welcome to    |-",5);
         println("-|       ...        |-",5);
-        println("-|    {Koon Town}   |-",5);
+        println("-|      {Edna}      |-",5);//Cuz Koon Town is gonna raise some flags
         println("-|__________________|-",5);
     }
 
@@ -555,19 +577,19 @@ public class Extra
         Random RN= new Random();
         int a=RN.nextInt(3)+1;
         if(!name1.equals("")){
-            if(a==1){println("Mimi:You seem nice "+name1+". I'm glad.",30,500);}
-            else if(a==2){println("Mimi:I'm sure I'll find something this time.",30,500);}
-            else if(a==3){println("Mimi:I always dreamed of one day being able to fight like you.",30,500);}
+            if(a==1){println("{Mimi} You seem nice "+name1+". I'm glad.",30,500);}
+            else if(a==2){println("{Mimi} I'm sure I'll find something this time.",30,500);}
+            else if(a==3){println("{Mimi} I always dreamed of one day being able to fight like you.",30,500);}
         }
         if(!name2.equals("")){
-            if(a==1){println("Sasha:Have you ever felt bad killing these monsters?",30,500);}
-            else if(a==2){println("Sasha:I have much to learn. I don't feel that useful to you "+name2+"",30,500);}
-            else if(a==3){println("Sasha:I'll try to not get in your way Master.",30,500);}
+            if(a==1){println("{Sasha} Have you ever felt bad killing these monsters?",30,500);}
+            else if(a==2){println("{Sasha} I have much to learn. I don't feel that useful to you "+name2+"",30,500);}
+            else if(a==3){println("{Sasha} I'll try to not get in your way Master.",30,500);}
         }
         if(!name3.equals("")){
-            if(a==1){println("Mary:You seem really quiet sometimes. I like that.",30,500);}
-            else if(a==2){println("Mary:You never do anything to me "+name3+"...",30,500);}
-            else if(a==3){println("Mary:I can't help you in your battles. Don't die "+name3+"",30,500);}
+            if(a==1){println("{Mary} You seem really quiet sometimes. I like that.",30,500);}
+            else if(a==2){println("{Mary} You never do anything to me "+name3+"...",30,500);}
+            else if(a==3){println("{Mary} I can't help you in your battles. Don't die "+name3+"",30,500);}
         }
     }
 
@@ -589,21 +611,21 @@ public class Extra
     public void sashaTalk() throws Exception{
         Random RN= new Random();
         int a=RN.nextInt(5)+1;
-        if(a==1){println("Sasha:I got you!",30,500);}
-        else if(a==2){print("Sasha:Master! There's an opening!",30,500);}
-        else if(a==3){println("Sasha:Too slow!",30,500);}
-        else if(a==4){println("Sasha:"+name2+"! Let me!",30,500);}
-        else if(a==5){println("Sasha:Back off fiend!",30,500);}
+        if(a==1){println("{Sasha} I got you!",30,500);}
+        else if(a==2){print("{Sasha} Master! There's an opening!",30,500);}
+        else if(a==3){println("{Sasha} Too slow!",30,500);}
+        else if(a==4){println("{Sasha} "+name2+"! Let me!",30,500);}
+        else if(a==5){println("{Sasha} Back off fiend!",30,500);}
     }
 
     public void maryTalk() throws Exception{
         Random RN= new Random();
         int a=RN.nextInt(5)+1;
-        if(a==1){print("Mary:You always getting hurt "+name3+".",30,500);print(" Let me help you...",30,500);}
-        else if(a==2){print("Mary:How about we rest for a bit "+name3+"...",30,500);}
-        else if(a==3){print("Mary:Your hurt Master.",30,500);println("Let me help you feel better...",30,500);}
-        else if(a==4){println("Mary:You're not in a rush right now. Let's take a break.",30,500);}
-        else if(a==5){print("Mary:"+name3+"! You're hurt!",30,500);println("Sit down. Let me take care of everything",30,500);}
+        if(a==1){print("{Mary} You always getting hurt "+name3+".",30,500);print(" Let me help you...",30,500);}
+        else if(a==2){print("{Mary} How about we rest for a bit "+name3+"...",30,500);}
+        else if(a==3){print("{Mary} Your hurt Master.",30,500);println("Let me help you feel better...",30,500);}
+        else if(a==4){println("{Mary} You're not in a rush right now. Let's take a break.",30,500);}
+        else if(a==5){print("{Mary} "+name3+"! You're hurt!",30,500);println("Sit down. Let me take care of everything",30,500);}
     }
 
     public void end() throws Exception{
@@ -677,9 +699,11 @@ public class Extra
     {
         if(id==1){playEffect("Gloop");}
         else if(id==2){playEffect("Goblin 2");}
+        else if(id==3){playEffect("Skeleton 5");}
         else if(id==4){playEffect("Wolf 2");}
         else if(id==11){println("{Ghoul} At least I wasn't the last one to die.",30,0,"Ghoul 3");}
         else if(id==12){playEffect("Golem 3");}
+        else if(id==13){println("{Orc} Its only been 5 years in prison...",30,0,"Orc 5");}
         else if(id==101){println("{Knight} It's just a flesh wound.",30,0,"Knight 3");}
         else if(id==103){println("{Autumn Witch} Thank god this is over...",30,0,"FWitch 5");}
         else if(id==9999){playEffect("King 16");}
@@ -696,6 +720,40 @@ public class Extra
             clip.open(sound);
             clip.setFramePosition(0);  // Must always rewind!
             clip.start();
+        }
+        catch(Exception e){}
+    }
+
+    public void playBGM(int j) throws Exception
+    {
+        try
+        {
+            if(j==1)
+            {bgm1.loop(Integer.MAX_VALUE);}
+            else if(j==2)
+            {bgm2.loop(Integer.MAX_VALUE);}
+            else if(j==3)
+            {bgm3.loop(Integer.MAX_VALUE);}
+        }
+        catch(Exception e){}
+    }
+
+    public void switchAudio(int i, int j) throws Exception
+    {
+        try
+        {
+            if(i==1)
+            {bgm1.stop();}
+            else if(i==2)
+            {bgm2.stop();}
+            else if(i==3)
+            {bgm3.stop();}
+            if(j==1)
+            {bgm1.loop(Integer.MAX_VALUE);}
+            else if(j==2)
+            {bgm2.loop(Integer.MAX_VALUE);}
+            else if(j==3)
+            {bgm3.loop(Integer.MAX_VALUE);}
         }
         catch(Exception e){}
     }
