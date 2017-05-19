@@ -25,6 +25,7 @@ public class Extra
 
     public static void main(String[] args) throws Exception{
         Extra e= new Extra();
+        e.story();
         e.printWitch();
         e.printAngryWitch();
     }
@@ -484,7 +485,7 @@ public class Extra
         else if(a==4){println("{Rignus} Wanna get high on health?",30,500,"Rignus 4.3");}
         else if(a==5){println("{Rignus} Want some pot(s)?",30,500,"Rignus 5");}
     }
-    
+
     public void rignusBuy() throws Exception
     {
         Random RN = new Random();
@@ -515,6 +516,39 @@ public class Extra
 
     public String getName3(){
         return name3;
+    }
+
+    public void story() throws Exception{
+        Scanner input= new Scanner(System.in);
+        println("You are suddenly surrounded by multiple men. All wearing sunglasses",20,500);
+        println("One man walks in front of me",20,500);
+        cont();
+        println("{Billy} Well hello there. Welcome to Koon Town! My name's Billy",20,500);
+        println("{Billy} Im the mayor of the town and unfortunately for you.",20);
+        println("{Billy} You're going to have to work for us.",20,500);
+        cont();
+        println("{Billy} This is a mercenary town and if you want to live.. You have to listen to what I tell you",20,500);
+        System.out.println("(1)Accept");
+        System.out.println("(2)Refuse");
+        String a=input.nextLine();
+        if(a.equals("2")){
+            println("Billy waves his hands and the men grab me and take me to a hideout near the town",20,500);
+            println("There they beat me up and throw me into a cage. Soon I find out I was going to be a slave",20,500);
+            println("I soon die.",20,500);
+            cont();
+            story();
+        }
+        else{
+            println("{Billy} Im giving you four days to kill this man named King Joe.",20,500);
+            println("{Billy} You need to get through the four dungeons of death",20,500);
+            println("{Billy} Good Luck and have this gold to get started",20,500);
+        }
+    }
+
+    public void cont(){
+        Scanner input= new Scanner(System.in);
+        System.out.print("Press 1 to continue");
+        String a= input.next();
     }
 
     public void slaveTalk() throws Exception{
@@ -650,7 +684,7 @@ public class Extra
         else if(id==103){println("{Autumn Witch} Thank god this is over...",30,0,"FWitch 5");}
         else if(id==9999){playEffect("King 16");}
     }
-    
+
     public void playEffect(String name) throws Exception
     {
         try
@@ -666,7 +700,4 @@ public class Extra
         catch(Exception e){}
     }
 }
-
-
-
 
