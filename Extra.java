@@ -449,12 +449,12 @@ public class Extra
     public void smithTalk() throws Exception{
         Random RN= new Random();
         int a=RN.nextInt(6)+1;
-        if(a==1){println("{Blacksmith} :Armors, Weapons, I gottem all.",30,500,"Smith 1");}
-        else if(a==2){println("{Blacksmith} :Needa upgrade? I can help, but for a price.",30,500,"Smith 2.2");}
-        else if(a==3){println("{Blacksmith} :Things here cost alot, too bad for you.",30,500,"Smith 3");}
-        else if(a==4){println("{Blacksmith} :I'll give you a discount of 0% off today.",30,500,"Smith 4");}
-        else if(a==5){println("{Blacksmith} :Buy sumthing, or get out of my shop.",30,500,"Smith 5");}
-        else if(a==6){println("{Blacksmith} :Needa upgrade?",30,500,"Smith 2.1");}
+        if(a==1){println("{Blacksmith} Armors, Weapons, I gottem all.",30,500,"Smith 1");}
+        else if(a==2){println("{Blacksmith} Needa upgrade? I can help, but for a price.",30,500,"Smith 2.2");}
+        else if(a==3){println("{Blacksmith} Things here cost alot, too bad for you.",30,500,"Smith 3");}
+        else if(a==4){println("{Blacksmith} I'll give you a discount of 0% off today.",30,500,"Smith 4");}
+        else if(a==5){println("{Blacksmith} Buy sumthing, or get out of my shop.",30,500,"Smith 5");}
+        else if(a==6){println("{Blacksmith} Needa upgrade?",30,500,"Smith 2.1");}
     }
 
     public void tavernTalk() throws Exception{
@@ -594,7 +594,7 @@ public class Extra
         println("King Joe       -Renzo",7);
         println("Priestess      -Trina",7);
         println("Bartender      -Kenny",7);
-        println("{Blacksmith}      -Kenny",7);
+        println("Blacksmith     -Kenny",7);
         printTitle();
         println("Its been this long and we still haven't figured out what 'CE' stands for...",30);
         println("Maybe next time...;)",30);
@@ -641,15 +641,21 @@ public class Extra
 
     public void deathLine(int id) throws Exception
     {
-        String temp = "";
-        if(id==1){temp = "Gloop";}
-        else if(id==2){temp = "Goblin 2";}
-        else if(id==4){temp = "Wolf 2";}
-        else if(id==12){temp = "Golem 3";}
-        else if(id==9999){temp = "King 16";}
+        if(id==1){playEffect("Gloop");}
+        else if(id==2){playEffect("Goblin 2");}
+        else if(id==4){playEffect("Wolf 2");}
+        else if(id==11){println("{Ghoul} At least I wasn't the last one to die.",30,0,"Ghoul 3");}
+        else if(id==12){playEffect("Golem 3");}
+        else if(id==101){println("{Knight} It's just a flesh wound.",30,0,"Knight 3");}
+        else if(id==103){println("{Autumn Witch} Thank god this is over...",30,0,"FWitch 5");}
+        else if(id==9999){playEffect("King 16");}
+    }
+    
+    public void playEffect(String name) throws Exception
+    {
         try
         {
-            File file = new File("C:\\Users\\yukioh99\\Desktop\\Project Sounds\\Downloads here\\Cut Files\\"+temp+".wav");
+            File file = new File("C:\\Users\\yukioh99\\Desktop\\Project Sounds\\Downloads here\\Cut Files\\"+name+".wav");
             //Kenny's Directory// File file = new File("
             AudioInputStream sound = AudioSystem.getAudioInputStream(file);
             clip = AudioSystem.getClip();
