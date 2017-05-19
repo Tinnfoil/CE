@@ -64,7 +64,7 @@ public class CE extends JPanel
     public static boolean mDefStance, bossTimer;
     public static int timer;
     public static String bossName;
-    Player player= new Player(100,100,100,100,10,0,0,5,"");
+    Player player= new Player(100,100,100,100,10,0,2,5,"");
     Monster monster= new Monster(100,100,0,0,0,0,"",0);
     Monster boss = new Monster(100,100,0,0,0,0,"",0);
     Extra e= new Extra();
@@ -76,7 +76,7 @@ public class CE extends JPanel
         gold=400;
         day=0;
         dungeon=1;
-        guardAmount=5;
+        guardAmount=3;
         startingMana=0;
         goodPot=0;
         waterBought=false;
@@ -145,19 +145,18 @@ public class CE extends JPanel
      * 
      */
     public void town() throws Exception{
-        removeEffects();
         Random RN = new Random();
         Scanner input= new Scanner(System.in);
         String a="1";
         String b="1";
         while(playerLost==false){
-            
-            draw("Town");
+            removeEffects();
             day++; //every call for this method will increase the day.
             System.out.println("{Day "+day+"}");
             System.out.println("Press 1 to continue");
             a=input.next(); //<--doesn't matter but it's used for pauses in the game.
             while(infight==false){
+                draw("Town");
                 System.out.println("Gold:"+gold+"");
                 System.out.println("(1)Tavern");
                 System.out.print("(2)Healer");
@@ -404,7 +403,7 @@ public class CE extends JPanel
                         }
                     }
                     else if(b.equals("2")&&dungeon==2){
-                         e.switchAudio(1,2);
+                        e.switchAudio(1,2);
                         draw("Background3");background="Background3";
                         playEffect("Walk");
                         if(!dungeon(2,5)){
@@ -415,7 +414,7 @@ public class CE extends JPanel
                         }
                     }
                     else if(b.equals("3")&&dungeon==3){
-                         e.switchAudio(1,2);
+                        e.switchAudio(1,2);
                         draw("Background4");background="Background4";
                         playEffect("Walk");
                         if(!dungeon(3,5)){
@@ -426,7 +425,7 @@ public class CE extends JPanel
                         }
                     }
                     else if(b.equals("4")&&dungeon==4){
-                         e.switchAudio(1,2);
+                        e.switchAudio(1,2);
                         draw("Background5");background="Background5";
                         playEffect("Walk");
                         if(!dungeon(4,6)){
@@ -1615,7 +1614,7 @@ public class CE extends JPanel
             atksLeft--;
             attack();
         }
-        
+
         if(monster.getId()==13&&RN.nextInt(10)<2)
         {
             println("{Orc} Might have to beat you for that one...",30,0,"Orc 2");
@@ -1840,7 +1839,7 @@ public class CE extends JPanel
             e.printMadGoblin();
             playEffect("Goblin 4");
             println(monster.getName()+" stabs you! {You are bleeding}",30);
-            mDOT(monster.getDamage()/2,3);
+            DOT(monster.getDamage()/2,3);
             monster.setAID(RN.nextInt(2));
             return true;
         }
@@ -2080,6 +2079,7 @@ public class CE extends JPanel
         }
 
         //Witch
+        /**
         if(monster.getId()==102&&monster.healthPercentage()<1)
         {
             println("{Summer Witch} Its about to get hot up in here!",25,0,"SuWitch 5");
@@ -2102,6 +2102,7 @@ public class CE extends JPanel
             }
             return true;
         }
+        */
         if(monster.getId()==103&&monster.healthPercentage()<1&&monster.getAID()==0)
         {
             draw("Angry");
@@ -3245,7 +3246,7 @@ public class CE extends JPanel
                 println("{Pepo} You die",10,500);
             }
             if(i==4){
-                println("{Pepo} Using guard will increase your defense by 5 plus half of your level for three turns",20,500);
+                println("{Pepo} Using guard will increase your defense by 3 plus half of your level for three turns",20,500);
             }
             if(i==5){
                 println("{Pepo} Member' that these rocks are small fry and stronger ones will actually attack you",20,500);
@@ -3422,8 +3423,8 @@ public class CE extends JPanel
     public static void println(String str, int delay, int pause, String name) throws Exception{
         try
         {
-            File file = new File("C:\\Users\\yukioh99\\Desktop\\CE\\Sounds\\Cut Files\\"+name+".wav");
-            //File file = new File("C:\\Users\\Kenny\\Documents\\CE\\Sounds\\Audio Files\\"+name+".wav");
+            //File file = new File("C:\\Users\\yukioh99\\Desktop\\CE\\Sounds\\Cut Files\\"+name+".wav");
+            File file = new File("C:\\Users\\Kenny\\Documents\\CE\\Audio Files\\Audio Files\\"+name+".wav");
             AudioInputStream sound = AudioSystem.getAudioInputStream(file);
             clip = AudioSystem.getClip();
             clip.open(sound);
@@ -3457,8 +3458,8 @@ public class CE extends JPanel
     {
         try
         {
-            File file = new File("C:\\Users\\yukioh99\\Desktop\\Project Sounds\\Downloads here\\Cut Files\\"+name+".wav");
-            //Kenny's Directory// File file = new File("
+            //File file = new File("C:\\Users\\yukioh99\\Desktop\\Project Sounds\\Downloads here\\Cut Files\\"+name+".wav");
+            File file = new File("C:\\Users\\Kenny\\Documents\\CE\\Audio Files\\Audio Files\\"+name+".wav");
             AudioInputStream sound = AudioSystem.getAudioInputStream(file);
             clip = AudioSystem.getClip();
             clip.open(sound);
