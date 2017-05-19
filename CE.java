@@ -42,7 +42,7 @@ public class CE extends JPanel
 
     //+
     //Timers for ablities/mechanics
-    public static int guardTimer, guardAmount, mguardTimer, multiplier, defStanceTimer, trueBurst, amount, splitAmount, atksLeft, splitTimer, confuseTimer,curseTimer, DOTTimer, mDOTTimer, stunTimer,
+    public static int guardTimer, guardAmount, mguardTimer, multiplier, sashaChance, defStanceTimer, trueBurst, amount, splitAmount, atksLeft, splitTimer, confuseTimer,curseTimer, DOTTimer, mDOTTimer, stunTimer,
     dodgeChance,dodgeTimer, attackCancelTimer, guardCancelTimer, restCancelTimer, boostingTimer,  atkDownTimer,
     atkUpTimer, defUpTimer, warCryCount, turnTimer;
 
@@ -78,7 +78,7 @@ public class CE extends JPanel
         dungeon=1;
         guardAmount=5;
         startingMana=0;
-        goodPot=1;
+        goodPot=0;
         waterBought=false;
         infight=false;
         playerLost=false;
@@ -145,6 +145,7 @@ public class CE extends JPanel
      */
     public void town() throws Exception{
         removeEffects();
+        Random RN = new Random();
         Scanner input= new Scanner(System.in);
         String a="1";
         String b="1";
@@ -225,7 +226,7 @@ public class CE extends JPanel
                             }
                             System.out.println("GOLD:"+gold+"");
                             if(!mimi){System.out.println("(1)Mimi{50% chance to find more gold after fights(x1.2)}[120 Gold]|Age: 14|");}
-                            if(!sasha){System.out.println("(2)Sasha{Chance equal to player's crit to attack per turn(10+damage)}[100 Gold]|Age:17|");}
+                            if(!sasha){System.out.println("(2)Sasha{Has chance equal to player's crit(Not affected by warcry) to attack per turn(10+damage)}[100 Gold]|Age:17|");}
                             if(!mary){System.out.println("(3)Mary{Heals you 15% of max health after every fight(Not through magic...)}[120 gold]|Age:19|");}
                             System.out.println("(0)Leave");
                             String d=input.next();
@@ -263,7 +264,15 @@ public class CE extends JPanel
                     }
                     else if(b.equals("2"))
                     {
-                        println("It seems Billy is away at this time",30);
+                        if(RN.nextInt(3)==2){
+                            println("It seems Billy is away at this time",30);
+                        }
+                        else if(RN.nextInt(2)==1){
+                            println("He doesn't seem to be here at the moment",25);
+                        }
+                        else{
+                            println("The Bartender said he saw him leave a while ago",25);
+                        }
                     }
                 }
                 //Healer
@@ -658,6 +667,7 @@ public class CE extends JPanel
         timer=999;//Boss timer
         monster.setBurned(false);
         cursed=false; curseTimer=0;
+        sashaChance=player.getCrit();
         warCryCount=0;
         turnTimer = 0;
         player.setMana(startingMana);// can change for items that give extra starting mana
@@ -695,10 +705,10 @@ public class CE extends JPanel
                 if(a.equals("4")){
                     player.printStats();// Prints the player's stats
                     if(player.hatchet()){
-                        System.out.println("Base Damage:"+multiplier+" ");
+                        System.out.println(" Base Damage:"+multiplier+" ");
                     }
                     if(player.cowl()){
-                        System.out.println("Enemy's Defense:"+monster.getDefense()+" ");
+                        System.out.println(" Enemy's Defense:"+monster.getDefense()+" ");
                     }
                     System.out.println("");
 
@@ -878,6 +888,10 @@ public class CE extends JPanel
             if(player.getHealth()<=0){
                 player.setHealth(1);
             }
+            if(id==9999){
+                e.end();
+                playerLost=true;
+            }
             draw("Win");
             e.deathLine(id);
             println("You are victorious.",50);
@@ -909,10 +923,6 @@ public class CE extends JPanel
 
         }
         else if(id==-1){
-            playerLost=true;
-        }
-        else if(id==9999&&monster.getHealth()<=0){
-            e.end();
             playerLost=true;
         }
         else{
@@ -1371,6 +1381,10 @@ public class CE extends JPanel
             monster.setHealth(monster.getHealth()-damage);
             stun(2);
         }
+        else{
+            println("You deal "+player.getDamage()+" damage to "+monster.getName()+"",20);
+            monster.setHealth(monster.getHealth()-player.getDamage());
+        }
     }
 
     /**
@@ -1687,29 +1701,29 @@ public class CE extends JPanel
         Random RN = new Random();
         int line = RN.nextInt();
         if(id==1){
-            monster= new Monster(140,140,6,2,0,0,"The Slime",1);
+            monster= new Monster(140,140,7,2,0,0,"The Slime",1);
             System.out.println("You find a "+monster.getName().substring(3)+"");
             playEffect("Gloop");
             e.printSlime();//Animation
         }
         else if(id==2){
-            monster= new Monster(150,150,4,3,0,7,"The Goblin",2);
+            monster= new Monster(150,150,6,3,0,7,"The Goblin",2);
             System.out.println("You encounter a "+monster.getName().substring(3)+"");
             println("{Goblin} SURPRISE! hehehe...",25,0,"Goblin 3");
             e.printGoblin();
         }
         else if(id==3){
-            monster= new Monster(120,120,5,3,0,0,"The Skeleton",3);
+            monster= new Monster(120,120,8,3,0,0,"The Skeleton",3);
             System.out.println("You find a "+monster.getName().substring(3)+"");
             e.printSkeleton();
         }
         else if(id==4){
-            monster=new Monster(130,130,4,3,2,10,"The Wolf",4);
+            monster=new Monster(130,130,7,3,2,10,"The Wolf",4);
             System.out.println("You encounter a "+monster.getName().substring(3)+"");
             e.printWolf();
         }
         else if(id==11){
-            monster= new Monster(200,200,4,2,20,1,"The Ghoul",11);
+            monster= new Monster(200,200,7,2,20,1,"The Ghoul",11);
             System.out.println("You find a lone "+monster.getName().substring(3)+"");
             if(line%2==1){println("{Ghoul} Imma spook yo ass!",25,0,"Ghoul 1.1");}
             else{println("{Ghoul} Imma spook yo ass...hehehe",25,0,"Ghoul 1.2");}
@@ -1717,24 +1731,24 @@ public class CE extends JPanel
         }
         else if(id==12)
         {
-            monster = new Monster(200,200,6,10,0,0,"The Golem",12);
+            monster = new Monster(200,200,9,10,0,0,"The Golem",12);
             System.out.println("A stiff giant emerges from boulder nearby, best be ready to fight!");
             e.printGolem();
         }
         else if(id==13)
         {
-            monster = new Monster(200,200,8,4,0,1,"The Orc",13);
+            monster = new Monster(200,200,11,4,0,1,"The Orc",13);
             System.out.println("You find a single "+monster.getName().substring(3)+".");
             e.printOrc();
         }
         else if(id==14)
         {
-            monster = new Monster(200,200,6,3,0,0,"The Giant Crab",14);
+            monster = new Monster(200,200,9,3,0,0,"The Giant Crab",14);
             System.out.println("You stubble upon a wandering "+monster.getName().substring(3)+".");
             e.printCrab();
         }
         else if(id==101){
-            monster= new Monster(300,300,10,5,5,5,"The Knight",101);
+            monster= new Monster(300,300,13,5,5,5,"The Knight",101);
             System.out.println("You find a lone "+monster.getName().substring(3)+"");
             println("{Knight} Want to see my big sword?",30,0,"Knight 8");
             e.printKnight();
@@ -1745,30 +1759,30 @@ public class CE extends JPanel
             int temp = gen.nextInt(4)+1;
             if(temp ==1) 
             {
-                monster = new Monster(300,300,10,4,0,7,"The Summer Witch",102);
+                monster = new Monster(300,300,13,4,0,7,"The Summer Witch",102);
             }
             else if(temp==2) 
             {
-                monster = new Monster(300,300,5,7,0,5,"The Autumn Witch",103);
+                monster = new Monster(300,300,8,7,0,5,"The Autumn Witch",103);
                 println("{Autumn Witch} Let's get this over with..",25,0,"FWitch 1");
             }
             else if(temp==3)
             {
-                monster = new Monster(300,300,5,4,0,10,"The Winter Witch",104);
+                monster = new Monster(300,300,8,4,0,10,"The Winter Witch",104);
             }
             else
             {
-                monster = new Monster(300,300,5,4,20,5,"The Spring Witch",105);
+                monster = new Monster(300,300,8,4,20,5,"The Spring Witch",105);
             }
             e.printWitch();
         }
         else if(id==1001)
         {
-            monster= new Monster(300,300,7,3,10,0,"The Wraith",1001);
+            monster= new Monster(300,300,10,3,10,0,"The Wraith",1001);
             System.out.println("You stumble across a stray "+monster.getName().substring(3)+" in the ravaged plane.");
         }
         else if(id==9999){
-            boss= new Monster(500,500,15,5,10,5,"King Joe",9999);
+            boss= new Monster(500,500,20,5,10,5,"King Joe",9999);
             monster=boss;
             println("{King Joe} I am King Joe",30,200,"King 1");
             println("{King Joe} You look a bit different from last time...",30,0,"King 3");
@@ -2039,7 +2053,7 @@ public class CE extends JPanel
         if(id==101&&monster.getAID()==4&&!confused&&RN.nextInt(100)<90){//Knight
             draw("Angry");draw("Fireball");draw("Burn");
             println(monster.getName()+" burns you {Unable to heal}!",30);
-             println("{Knight} It's getting real hot in here...",30,0,"Knight 4");
+            println("{Knight} It's getting real hot in here...",30,0,"Knight 4");
             cancelRest(2);
             player.burn(3);
             DOT(3,monster.getDamage());
@@ -2052,7 +2066,7 @@ public class CE extends JPanel
         {
             println("{Summer Witch} Its about to get hot up in here!",25,0,"SuWitch 5");
             println("The witch envelopes herself in flames.",25);
-            int damage = (int)(monster.getDamage()*1.5-(double)player.getDefense());
+            int damage = (int)(monster.getDamage()*1.5);
             println("The searing flames inflicts " + damage+ "damage",25);
             Random gen = new Random();
             if(gen.nextInt(10)<=2)
@@ -2093,7 +2107,7 @@ public class CE extends JPanel
                 draw("Angry");
                 e.printAngryWitch();
                 println("The witch silently waves her hand.",30);
-                int inflicted = monster.getDamage()*2-player.getDefense();
+                int inflicted = monster.getDamage()*2;
                 player.setHealth(player.getHealth()-inflicted);
                 println(monster.getName()+"'s spell inflicts "+inflicted+" damage.",25);
                 monster.setAID(0);
@@ -2118,8 +2132,8 @@ public class CE extends JPanel
             else if(11<temp&&temp<30)
             {
                 e.printAngryWitch();
-                println("{Winter Witch} Do be mindful of those spikes...",25,0,"WWitch 2");
-                int inflicted = (int)((double)monster.getDamage()*1.3)-player.getDefense();
+                println("{Winter Witch} Do be mindful of those spikes...",25,0,"WWitch 3");
+                int inflicted = (int)((double)monster.getDamage()*1.3);
                 println("The witch's icicles rain from above dealing "+inflicted+" damage!",25);
                 return true;
             }
@@ -2383,8 +2397,8 @@ public class CE extends JPanel
         }
         else if(player.swordandboard())
         {
-            System.out.println("(1)Defensive Stance{For the next three turns, attacks will deal bonus damage equal to the defense}[30 Mana]");
-            System.out.println("(2)Shield Bash{Deals player's damage with a 40% to stun- Already stunned enemy will be stunned again}[20 Mana]");
+            System.out.println("(1)Defensive Stance{For the next two turns, attacks will deal bonus damage equal to the defense}[30 Mana]");
+            System.out.println("(2)Shield Bash{Deals player's damage with a 40% to stun- Already stunned enemy will be stunned again}[35 Mana]");
         }
         else if(player.staff())
         {
@@ -2436,7 +2450,7 @@ public class CE extends JPanel
             defStance();
             return false;
         }
-        else if(b.equals("2")&&player.swordandboard()&&useMana(20))
+        else if(b.equals("2")&&player.swordandboard()&&useMana(35))
         {
             draw("Shieldbash");
             shieldBash();
@@ -2649,37 +2663,37 @@ public class CE extends JPanel
         Random RN = new Random();
         int goldfound=0;
         if(id==1){
-            player.setExp(player.getExp()+75);goldfound+=RN.nextInt(50)+20; e.printDeadSlime();
+            player.setExp(player.getExp()+75);goldfound+=RN.nextInt(35)+20; e.printDeadSlime();
         }
         if(id==2){
-            player.setExp(player.getExp()+75);goldfound+=RN.nextInt(50)+20; e.printDeadGoblin();
+            player.setExp(player.getExp()+75);goldfound+=RN.nextInt(35)+20; e.printDeadGoblin();
         }
         if(id==3){
-            player.setExp(player.getExp()+75);goldfound+=RN.nextInt(50)+20; e.printDeadSkeleton();
+            player.setExp(player.getExp()+75);goldfound+=RN.nextInt(35)+20; e.printDeadSkeleton();
         }
         if(id==4){
-            player.setExp(player.getExp()+75);goldfound+=RN.nextInt(60)+20; e.printDeadWolf();
+            player.setExp(player.getExp()+75);goldfound+=RN.nextInt(45)+20; e.printDeadWolf();
         }
         if(id==11){
-            player.setExp(player.getExp()+200);goldfound+=RN.nextInt(60)+50; e.printDeadGhoul();
+            player.setExp(player.getExp()+200);goldfound+=RN.nextInt(35)+50; e.printDeadGhoul();
         }
         if(id==12){
-            player.setExp(player.getExp()+200);goldfound+=RN.nextInt(60)+50; e.printDeadGolem();
+            player.setExp(player.getExp()+200);goldfound+=RN.nextInt(35)+50; e.printDeadGolem();
         }
         if(id==13){
-            player.setExp(player.getExp()+200);goldfound+=RN.nextInt(60)+50; e.printDeadOrc();
+            player.setExp(player.getExp()+200);goldfound+=RN.nextInt(35)+50; e.printDeadOrc();
         }
         if(id==14){
-            player.setExp(player.getExp()+200);goldfound+=RN.nextInt(60)+50; e.printDeadCrab();
+            player.setExp(player.getExp()+200);goldfound+=RN.nextInt(35)+50; e.printDeadCrab();
         }
         if(id==101){
-            player.setExp(player.getExp()+400);goldfound+=RN.nextInt(80)+80; e.printDeadKnight();
+            player.setExp(player.getExp()+400);goldfound+=RN.nextInt(50)+80; e.printDeadKnight();
         }
         if(id>=102&&id<=105){
-            player.setExp(player.getExp()+400);goldfound+=RN.nextInt(80)+80; e.printDeadWitch();
+            player.setExp(player.getExp()+400);goldfound+=RN.nextInt(50)+80; e.printDeadWitch();
         }
         if(id==1001){
-            player.setExp(player.getExp()+400);goldfound+=RN.nextInt(100)+90;
+            player.setExp(player.getExp()+400);goldfound+=RN.nextInt(80)+90;
         }
         return goldfound;
     }
@@ -3019,7 +3033,7 @@ public class CE extends JPanel
             System.out.println("Passive: While guarding, player's attacks will have 5% to stun and a 5% chance to reflect when attacked");
             System.out.println("Defensive Stance: For the 2 turns, player will deal bonus damage equal to double their defense[30 Mana]");
             System.out.println("                  *Does not end the player's turn");
-            System.out.println("Shield Bash: Deals player damage and has 40% chance to stun.[20 Mana]");
+            System.out.println("Shield Bash: Deals player damage and has 40% chance to stun.[35 Mana]");
             System.out.println("             Stuns again if already stunned and deal double player damage(Can crit)");
             player.printWeaponStats("swordandboard");
             if(!player.getWeaponRack().get(2).getOwned()){
@@ -3195,7 +3209,7 @@ public class CE extends JPanel
         int i=0;
         monster= new Monster(999,999,0,0,0,0,"The Rock",0);
         boolean chosen=false;
-        while(i==6){
+        while(i<8){
             if(i==0){
                 println("Pepo: Use that sword of yours and cut that rock like a samurai!",20,500);
                 println("Pepo: Using attack will deal a certain amount of damage. It can crit and is reduced by how much defense the enemy has.",20,500);
@@ -3224,6 +3238,14 @@ public class CE extends JPanel
                 println("*ETC.",20,200);
             }
             if(i==6){
+                println("Pepo: Try using defensive stance in (4)Other This will give a buff for bonus damage equal to your defense",20,500);
+                println("Pepo: You don't have any by default right now, but you can use guard to artifically gain defense for a better buff!",20,500);
+            }
+            if(i==7){
+                println("Pepo: Abilities will exploit your actions and stats, and weapons and armors have special magix that give you",20);
+                println("unique powers that can be put together in many ways",20,500);
+            }
+            if(i==8){
                 println("The rock cracks and then breaks in half.",20,500);
                 e.printAngryRock();
                 println("Pepo:Cy@",40,500);
@@ -3250,7 +3272,7 @@ public class CE extends JPanel
                 chosen= true;
             }
             else if(a.equals("4")){
-                System.out.print("(1)Defensive Stance{For the next three turns, you gain bonus damage equal to you def}[30 Mana]");
+                System.out.print("(1)Defensive Stance{For the next two turns, you gain bonus damage equal to double your def}[30 Mana]");
                 String b= input.next();
                 if(b.equals("1")&&useMana(30)){
                     println("You go into a Defensive Stance!",20);
@@ -3271,9 +3293,9 @@ public class CE extends JPanel
         println("After a couple hours of walking we find a town within the grasslands",20,500);
         println("I read a sign.",20,500);
         e.printTown();
-        println("Pepo:Wowee..., this place is huge! This used to be a rag town",20,500);
+        println("Pepo:Uh...I think this is the place. It looks like a nice town.",20,500);
         println("Pepo:So there are a couple of places you can go to here",20,500);
-        println("Gold:"+gold+"",20);
+        println("Gold:0",20);
         println("(1)Tavern-Misc. things",20,500);
         println("(2)Healer-Heal and to buy potions",20,500);
         println("(3)Blacksmith-Buy Armors/Weapons",20,500);
@@ -3283,7 +3305,7 @@ public class CE extends JPanel
         cont();
         println("Pepo:I think that should be good nough'. There more to tell you but there too much.",20,500);
         println("Pepo:Find out yourself "+player.getName()+", and... thanks for saving me",20,500);
-        println("Looking a little lost, Pepo begins to fly away.",20,500);
+        println("Looking a little lost, Pepo begins to fly away.{You'll never see him again}",20,500);
     }
 
     public void cont(){
@@ -3321,7 +3343,7 @@ public class CE extends JPanel
 
     public void sashaPass() throws Exception{
         Random RN= new Random();
-        if(sasha&&RN.nextInt(100)<=player.getCrit()){
+        if(sasha&&RN.nextInt(100)<=sashaChance){
             e.sashaTalk();
             int damage= 10+player.getDamage();
             monster.setHealth(monster.getHealth()-damage);
